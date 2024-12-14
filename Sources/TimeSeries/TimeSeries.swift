@@ -5,14 +5,7 @@
 //  Created by Vitali Kurlovich on 10.12.24.
 //
 
-public protocol TimeSeriesProtocol {
-    associatedtype Element: TimeSeriesItem
-    associatedtype ItemsSequence = [Element]
-
-    init(timeBase: FixedDate, items: [Element])
-}
-
-public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, TimeSeriesProtocol, Hashable, Sendable {
+public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashable, Sendable {
     public typealias ItemsSequence = [Element]
 
     public typealias Index = ItemsSequence.Index

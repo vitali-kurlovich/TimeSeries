@@ -8,7 +8,7 @@
 import Testing
 @testable import TimeSeries
 
-@Test("TimeSeries union with empty")
+@Test("FixedDate adding")
 func fixedDateAdding() throws {
     let fixedData = FixedDate(200)
 
