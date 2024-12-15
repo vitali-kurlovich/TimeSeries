@@ -7,47 +7,65 @@
 
 public struct TimeSeriesBatch<Series: TimeSeriesCollection>: Hashable, Sendable
     where Series: Hashable & Sendable,
-    Series.SubSequence: Hashable & Sendable,
-    Series.Index: AdditiveArithmetic & BinaryInteger
+    Series.SubSequence: Hashable & Sendable
 {
-    let batches: [Series]
+    private let batches: [Series]
+
+    public init<S: Sequence>(_ batches: S) where S.Element == Series {
+        assert(batches.isTimeRangeIncrease)
+
+        let batches = batches.filter { !$0.isEmpty }
+        self.batches = batches
+    }
 }
 
 extension TimeSeriesBatch: RandomAccessCollection {
-    public typealias Index = Series.Index
-    public typealias Element = (Series, Series.Index)
+    public typealias Index = Array<Series>.Index
+    public typealias Element = Series
 
     public var startIndex: Index {
-        .zero
+        batches.startIndex
     }
 
     public var endIndex: Index {
-        batches.reduce(startIndex) { partialResult, series in
-            partialResult + (series.endIndex - series.startIndex)
-        }
+        batches.endIndex
     }
 
     public func index(after i: Index) -> Index {
-        i + 1
+        batches.index(after: i)
     }
 
     public func index(before i: Index) -> Index {
-        i - 1
+        batches.index(before: i)
     }
 
-    public subscript(position: Series.Index) -> Element {
-        var position = position
+    public subscript(position: Index) -> Element {
+        batches[position]
+    }
+}
 
-        for series in batches {
-            let index = series.index(series.startIndex, offsetBy: Int(position))
+public
+extension TimeSeriesBatch {
+    var timeRange: FixedDateInterval? {
+        let ranges = batches.compactMap { $0.timeRange }
 
-            if series.indices.contains(index) {
-                return (series, index)
-            }
-
-            position -= (series.endIndex - series.startIndex)
+        guard let start = ranges.first?.start,
+              let end = ranges.last?.end
+        else {
+            return nil
         }
 
-        fatalError()
+        return FixedDateInterval(start: start, end: end)
+    }
+
+    subscript(_ range: FixedDateInterval) -> TimeSeriesBatch<Series.SubSequence> {
+        let series = batches.lazy.map {
+            $0[range]
+        }.filter {
+            !$0.isEmpty
+        }
+
+        let batches = Array(series)
+        return .init(batches)
     }
 }
