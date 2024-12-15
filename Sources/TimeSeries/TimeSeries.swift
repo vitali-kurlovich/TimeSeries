@@ -6,15 +6,8 @@
 //
 
 public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashable, Sendable {
-    public typealias ItemsSequence = [Element]
-
-    public typealias Index = ItemsSequence.Index
-    public typealias Indices = ItemsSequence.Indices
-
-    public typealias SubSequence = TimeSeriesSlice<Element>
-
     public let timeBase: FixedDate
-    public let items: [Element]
+    private let items: [Element]
 
     public init(timeBase: FixedDate, items: [Element]) {
         assert(items.isTimeValueIncrease)
@@ -23,17 +16,46 @@ public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashabl
         self.items = items
     }
 
+    public static var empty: Self { Self(timeBase: .zero, items: []) }
+}
+
+extension TimeSeries: RandomAccessCollection {
+    public typealias Index = Array<Element>.Index
+    public typealias Indices = Array<Element>.Indices
+    public typealias SubSequence = TimeSeriesSlice<Element>
+
+    public var indices: Indices {
+        items.indices
+    }
+
+    public var startIndex: Index {
+        items.startIndex
+    }
+
+    public var endIndex: Index {
+        items.endIndex
+    }
+
+    public func index(before i: Index) -> Index {
+        items.index(before: i)
+    }
+
+    public func index(after i: Index) -> Index {
+        items.index(after: i)
+    }
+
+    public subscript(position: Index) -> Element {
+        items[position]
+    }
+
     public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
         SubSequence(timeBase: timeBase, items: items[range])
     }
-
-    public static var empty: Self { Self(timeBase: .zero, items: []) }
 }
 
 public
 extension TimeSeries {
     init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element {
-        let items = Array(series.items)
-        self.init(timeBase: series.timeBase, items: items)
+        self.init(timeBase: series.timeBase, items: Array(series))
     }
 }

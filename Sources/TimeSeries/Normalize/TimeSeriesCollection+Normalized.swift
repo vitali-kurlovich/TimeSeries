@@ -18,7 +18,7 @@ extension TimeSeriesCollection {
             return TimeSeries(self)
         }
 
-        let items = items.map { item in
+        let items = map { item in
             let time = item.time - timeOffset
             return item.setTime(time)
         }

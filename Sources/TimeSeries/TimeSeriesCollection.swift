@@ -7,11 +7,11 @@
 
 import Algorithms
 
-public protocol TimeSeriesCollection: RandomAccessCollection where Element: TimeSeriesItem, SubSequence: TimeSeriesCollection {
-    associatedtype ItemsSequence: RandomAccessCollection<Element>
-
+public protocol TimeSeriesCollection: RandomAccessCollection
+    where Element: TimeSeriesItem,
+    SubSequence: TimeSeriesCollection
+{
     var timeBase: FixedDate { get }
-    var items: ItemsSequence { get }
 
     static var empty: Self { get }
 }
@@ -27,34 +27,6 @@ extension TimeSeriesCollection {
         let end = dateTime(at: index(before: endIndex))
 
         return FixedDateInterval(start: start, end: end)
-    }
-}
-
-public extension TimeSeriesCollection
-    where Index == ItemsSequence.Index, Indices == ItemsSequence.Indices
-{
-    var indices: Indices {
-        items.indices
-    }
-
-    var startIndex: Index {
-        items.startIndex
-    }
-
-    var endIndex: Index {
-        items.endIndex
-    }
-
-    func index(before i: Index) -> Index {
-        items.index(before: i)
-    }
-
-    func index(after i: Index) -> Index {
-        items.index(after: i)
-    }
-
-    subscript(position: Index) -> Element {
-        items[position]
     }
 }
 

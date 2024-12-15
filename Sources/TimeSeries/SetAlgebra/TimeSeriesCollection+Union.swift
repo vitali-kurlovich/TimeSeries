@@ -30,12 +30,12 @@ extension TimeSeriesCollection {
         let delta = first.timeBase.millisecondsSince(second.timeBase)
         let increment = Element.IntegerTime(delta)
 
-        let secondItems = second.items.lazy.map { item in
+        let secondItems = second.lazy.map { item in
             let time = item.time + increment
             return item.setTime(time)
         }
 
-        let items = first.items.merge(secondItems).removeDuplicates()
+        let items = first.merge(secondItems).removeDuplicates()
 
         return TimeSeries(timeBase: first.timeBase, items: Array(items))
     }
