@@ -30,6 +30,10 @@ extension TimeSeriesCollection {
         let delta = first.timeBase.millisecondsSince(second.timeBase)
         let increment = Element.IntegerTime(delta)
 
+        if let last = second.last {
+            assert(last.time < Element.IntegerTime.max - increment)
+        }
+
         let secondItems = second.lazy.map { item in
             let time = item.time + increment
             return item.setTime(time)
