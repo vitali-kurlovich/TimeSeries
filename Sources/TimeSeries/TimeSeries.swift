@@ -30,15 +30,10 @@ public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashabl
     public static var empty: Self { Self(timeBase: .zero, items: []) }
 }
 
+public
 extension TimeSeries {
     init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element {
         let items = Array(series.items)
         self.init(timeBase: series.timeBase, items: items)
-    }
-}
-
-extension TimeSeries {
-    init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element, S.ItemsSequence == [Element] {
-        self.init(timeBase: series.timeBase, items: series.items)
     }
 }
