@@ -23,15 +23,26 @@ struct TimeSeriesBatchTests {
         #expect(subBatch.isEmpty)
         #expect(subBatch.timeRange == nil)
     }
+
+    @Test("One item batch")
+    func one() {
+        let series = TimeSeries(timeBase: FixedDate(100),
+                                items: [
+                                    MocItem(time: 10, index: 1),
+                                ])
+
+        let batch = TimeSeriesBatch(CollectionOfOne(series))
+
+        #expect(batch.isEmpty == false)
+        #expect(batch.timeRange == FixedDateInterval(start: FixedDate(110), end: FixedDate(110)))
+
+        let interval = FixedDateInterval(start: FixedDate(100), end: FixedDate(400))
+        let subBatch = batch[interval]
+
+        #expect(subBatch.isEmpty == false)
+        #expect(subBatch.timeRange == FixedDateInterval(start: FixedDate(110), end: FixedDate(110)))
+
+        #expect(batch[FixedDateInterval(start: FixedDate(200), end: FixedDate(400))].isEmpty == true)
+        #expect(batch[FixedDateInterval(start: FixedDate(200), end: FixedDate(400))].timeRange == nil)
+    }
 }
-
-/*
- let series = TimeSeries(timeBase: FixedDate(100),
-                         items: [
-                             MocItem(time: 10, index: 1),
-                             MocItem(time: 20, index: 2),
-                             MocItem(time: 30, index: 3),
-                             MocItem(time: 40, index: 4),
-                         ])
-
- */
