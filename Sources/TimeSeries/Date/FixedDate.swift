@@ -50,12 +50,10 @@ public extension FixedDate {
 }
 
 public extension FixedDate {
-    
     static func now() -> Self {
         Self(Date())
     }
 }
-
 
 public extension Date {
     init(_ fixed: FixedDate) {
