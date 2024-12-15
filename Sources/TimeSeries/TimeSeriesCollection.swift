@@ -18,7 +18,7 @@ public protocol TimeSeriesCollection: RandomAccessCollection where Element: Time
 
 public
 extension TimeSeriesCollection {
-    var itemsTimeRange: FixedDateInterval? {
+    var timeRange: FixedDateInterval? {
         if isEmpty {
             return nil
         }
@@ -66,15 +66,7 @@ extension TimeSeriesCollection {
     }
 
     subscript(_ range: FixedDateInterval) -> Self.SubSequence {
-        if isEmpty {
-            return .empty
-        }
-
-        if range.end < dateTime(at: startIndex) {
-            return .empty
-        }
-
-        if range.start > dateTime(at: index(before: endIndex)) {
+        guard let timeRange, timeRange.intersects(range) else {
             return .empty
         }
 
