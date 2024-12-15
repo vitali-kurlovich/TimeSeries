@@ -8,7 +8,7 @@
 public
 extension TimeSeriesCollection {
     func normalized() -> TimeSeries<Element> {
-        guard !items.isEmpty else {
+        if isEmpty {
             return .empty
         }
 
