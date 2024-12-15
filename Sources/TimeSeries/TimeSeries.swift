@@ -11,7 +11,6 @@ public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashabl
 
     public init(timeBase: FixedDate, items: [Element]) {
         assert(items.isTimeValueIncrease)
-
         self.timeBase = timeBase
         self.items = items
     }
