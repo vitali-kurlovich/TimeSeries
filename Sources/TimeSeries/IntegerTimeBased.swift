@@ -6,7 +6,7 @@
 //
 
 public protocol IntegerTimeBased {
-    associatedtype IntegerTime: BinaryInteger
+    associatedtype IntegerTime: FixedWidthInteger
     var time: IntegerTime { get }
 
     func setTime(_ time: IntegerTime) -> Self
