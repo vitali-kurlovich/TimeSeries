@@ -22,3 +22,23 @@ extension Sequence where Self.Element: IntegerTimeBased {
         return true
     }
 }
+
+extension Sequence where Self.Element: TimeSeriesCollection {
+    var isTimeRangeIncrease: Bool {
+        let timeRanges = lazy.compactMap { $0.timeRange }
+
+        var iterator = timeRanges.makeIterator()
+
+        guard var prev = iterator.next() else {
+            return true
+        }
+
+        while let next = iterator.next() {
+            guard prev.end <= next.start else {
+                return false
+            }
+            prev = next
+        }
+        return true
+    }
+}
