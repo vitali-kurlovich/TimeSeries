@@ -13,9 +13,33 @@ public struct TimeSeriesBatch<Series: TimeSeriesCollection>: Hashable, Sendable
 
     public init<S: Sequence>(_ batches: S) where S.Element == Series {
         assert(batches.isTimeRangeIncrease)
+        self.batches = batches.filter { !$0.isEmpty }
+    }
+}
 
-        let batches = batches.filter { !$0.isEmpty }
-        self.batches = batches
+public
+extension TimeSeriesBatch {
+    var timeRange: FixedDateInterval? {
+        let ranges = batches.compactMap {
+            $0.timeRange
+        }
+
+        guard let start = ranges.first?.start,
+              let end = ranges.last?.end
+        else {
+            return nil
+        }
+
+        return FixedDateInterval(start: start, end: end)
+    }
+
+    subscript(_ range: FixedDateInterval) -> TimeSeriesBatch<Series.SubSequence> {
+        let batches = batches.lazy.map {
+            $0[range]
+        }.filter {
+            !$0.isEmpty
+        }
+        return .init(batches)
     }
 }
 
@@ -41,31 +65,5 @@ extension TimeSeriesBatch: RandomAccessCollection {
 
     public subscript(position: Index) -> Element {
         batches[position]
-    }
-}
-
-public
-extension TimeSeriesBatch {
-    var timeRange: FixedDateInterval? {
-        let ranges = batches.compactMap { $0.timeRange }
-
-        guard let start = ranges.first?.start,
-              let end = ranges.last?.end
-        else {
-            return nil
-        }
-
-        return FixedDateInterval(start: start, end: end)
-    }
-
-    subscript(_ range: FixedDateInterval) -> TimeSeriesBatch<Series.SubSequence> {
-        let series = batches.lazy.map {
-            $0[range]
-        }.filter {
-            !$0.isEmpty
-        }
-
-        let batches = Array(series)
-        return .init(batches)
     }
 }
