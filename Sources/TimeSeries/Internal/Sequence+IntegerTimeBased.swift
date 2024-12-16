@@ -34,7 +34,7 @@ extension Sequence where Self.Element: TimeSeriesCollection {
         }
 
         while let next = iterator.next() {
-            guard prev.end <= next.start else {
+            guard prev.end < next.start else {
                 return false
             }
             prev = next
