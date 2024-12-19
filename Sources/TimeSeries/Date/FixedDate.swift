@@ -8,7 +8,7 @@
 import Foundation
 
 public struct FixedDate: Hashable, Sendable {
-    let millisecondsFrom1970: Int
+    public let millisecondsFrom1970: Int
 
     public init(_ millisecondsFrom1970: Int) {
         self.millisecondsFrom1970 = millisecondsFrom1970
