@@ -81,13 +81,11 @@ struct TimeSeriesBatchTests {
         let expacted = TimeSeriesBatch([series1[renge], series2[renge]])
 
         #expect(batch[renge] == expacted)
-        
-        
+
         let renge1 = FixedDateInterval(start: FixedDate(900), end: FixedDate(1100))
         let expacted1 = TimeSeriesBatch([series3[renge1]])
-        
+
         #expect(batch[renge1] == expacted1)
-        
     }
 }
 
