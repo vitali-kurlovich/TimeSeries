@@ -71,6 +71,7 @@ struct TimeSeriesBatchTests {
         let series3 = Self.series3
 
         let batch = TimeSeriesBatch([series1, series2, series3])
+        #expect(batch.count == 3)
 
         #expect(batch[FixedDateInterval(start: FixedDate(90), end: FixedDate(100))].isEmpty)
         #expect(batch[FixedDateInterval(start: FixedDate(500), end: FixedDate(600))].isEmpty)
@@ -81,6 +82,7 @@ struct TimeSeriesBatchTests {
         let expacted = TimeSeriesBatch([series1[renge], series2[renge]])
 
         #expect(batch[renge] == expacted)
+        #expect(batch[renge].count == 2)
 
         let renge1 = FixedDateInterval(start: FixedDate(900), end: FixedDate(1100))
         let expacted1 = TimeSeriesBatch([series3[renge1]])
