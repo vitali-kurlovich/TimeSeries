@@ -53,7 +53,7 @@ struct TimeSeriesAdapterTests {
     }
 
     @Test("TimeSeriesAdapter slice by DateInterval")
-    func convertSubrangeDatteInterval() {
+    func convertSubrangeDateInterval() {
         let series = TimeSeries(timeBase: FixedDate(200), items: ticks)
         let converter = Converter()
 
