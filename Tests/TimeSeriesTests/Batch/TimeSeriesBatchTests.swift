@@ -13,7 +13,7 @@ struct TimeSeriesBatchTests {
 
     @Test("Empty batch")
     func empty() {
-        let emptyBatch = TimeSeriesBatch<Series>([])
+        let emptyBatch = TimeSeriesBatch([Series]())
         #expect(emptyBatch.isEmpty)
         #expect(emptyBatch.timeRange == nil)
 
@@ -81,13 +81,13 @@ struct TimeSeriesBatchTests {
 
         let expacted = TimeSeriesBatch([series1[renge], series2[renge]])
 
-        #expect(batch[renge] == expacted)
+        #expect(Array(batch[renge]) == Array(expacted))
         #expect(batch[renge].count == 2)
 
         let renge1 = FixedDateInterval(start: FixedDate(900), end: FixedDate(1100))
         let expacted1 = TimeSeriesBatch([series3[renge1]])
 
-        #expect(batch[renge1] == expacted1)
+        #expect(Array(batch[renge1]) == Array(expacted1))
     }
 }
 
