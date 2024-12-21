@@ -5,15 +5,17 @@
 //  Created by Vitali Kurlovich on 20.12.24.
 //
 
-public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable, Batch: RandomAccessCollection>: Sendable
+public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable, Batch: TimeSeriesBatchProtocol>: Sendable
     where
-    Batch.Element: TimeSeriesCollection,
+
     Batch.Index == Int,
     Batch.Element.Index == Int,
     Converter.Input == Batch.Element.Element,
     Batch: Sendable,
     Batch.SubSequence: Sendable
 {
+    public typealias SubSequenceBatch = Batch.SubSequenceBatch
+
     public let batch: Batch
     public let converter: Converter
 
@@ -71,5 +73,17 @@ extension TimeSeriesBatchAdapter: RandomAccessCollection {
     public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
         let batch = batch[range]
         return SubSequence(converter: converter, batch: batch)
+    }
+
+    public subscript(_ range: FixedDateInterval) -> TimeSeriesBatchAdapter<Converter, SubSequenceBatch>
+        where
+        SubSequenceBatch.Index == Int,
+        SubSequenceBatch.Element.Index == Int,
+        Converter.Input == SubSequenceBatch.Element.Element,
+        SubSequenceBatch: Sendable,
+        SubSequenceBatch.SubSequence: Sendable
+    {
+        let subBatch = batch[range]
+        return .init(converter: converter, batch: subBatch)
     }
 }
