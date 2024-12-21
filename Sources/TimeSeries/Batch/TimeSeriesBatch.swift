@@ -5,13 +5,6 @@
 //  Created by Vitali Kurlovich on 15.12.24.
 //
 
-public protocol TimeSeriesBatchProtocol: RandomAccessCollection where Self.Element: TimeSeriesCollection, Self.SubSequence: TimeSeriesBatchProtocol {
-    associatedtype SubSequenceBatch: TimeSeriesBatchProtocol
-    var timeRange: FixedDateInterval? { get }
-
-    subscript(_: FixedDateInterval) -> SubSequenceBatch { get }
-}
-
 public struct TimeSeriesBatch<Batches: RandomAccessCollection>: Sendable
     where
     Batches: Sendable,
@@ -27,7 +20,7 @@ public struct TimeSeriesBatch<Batches: RandomAccessCollection>: Sendable
     }
 }
 
-extension TimeSeriesBatch: TimeSeriesBatchProtocol {
+extension TimeSeriesBatch: TimeSeriesCollectionBatch {
     public typealias SubSequenceBatch = TimeSeriesBatch<[Batches.Element.SubSequence]>
 
     public var timeRange: FixedDateInterval? {
