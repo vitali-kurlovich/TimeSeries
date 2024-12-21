@@ -22,24 +22,83 @@ struct TimeSeriesBatchAdapterTests {
         let result = Array(adapter)
 
         let expected = [
-            "120 [4, 5]",
-            "125 [14, 15]",
-            "130 [10, 2]",
-            "140 [10, 2]",
-            "150 [1, 20]",
+            "120 [4, 5]", // 0
+            "125 [14, 15]", // 1
+            "130 [10, 2]", // 2
+            "140 [10, 2]", // 3
+            "150 [1, 20]", // 4
 
-            "220 [4, 5]",
-            "225 [14, 15]",
-            "230 [10, 2]",
+            "220 [4, 5]", // 5
+            "225 [14, 15]", // 6
+            "230 [10, 2]", // 7
 
-            "330 [10, 2]",
-            "340 [10, 2]",
-            "350 [1, 20]",
-            "360 [1, 20]",
-            "370 [1, 20]",
+            "330 [10, 2]", // 8
+            "340 [10, 2]", // 9
+            "350 [1, 20]", // 10
+            "360 [1, 20]", // 11
+            "370 [1, 20]", // 12
         ]
 
         #expect(result == expected)
+    }
+
+    @Test("TimeSeriesAdapter slice by index range")
+    func convertSubrange() {
+        let batch = TimeSeriesBatch(series)
+        let converter = Converter()
+
+        let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
+
+        let adapterSlice = adapter[2 ... 10]
+
+        let resultSubrange = Array(adapterSlice)
+
+        let expectedSubrange = [
+            "130 [10, 2]", // 2
+            "140 [10, 2]", // 3
+            "150 [1, 20]", // 4
+
+            "220 [4, 5]", // 5
+            "225 [14, 15]", // 6
+            "230 [10, 2]", // 7
+
+            "330 [10, 2]", // 8
+            "340 [10, 2]", // 9
+            "350 [1, 20]", // 10
+        ]
+
+        #expect(resultSubrange == expectedSubrange)
+
+        let resultSubSlice = Array(adapterSlice[5 ... 7])
+
+        let expectedSliceSubrange = [
+            "220 [4, 5]", // 5
+            "225 [14, 15]", // 6
+            "230 [10, 2]", // 7
+        ]
+
+        #expect(resultSubSlice == expectedSliceSubrange)
+    }
+
+    @Test("TimeSeriesAdapter slice by DateInterval")
+    func convertSubrangeDateInterval() {
+        let batch = TimeSeriesBatch(series)
+        let converter = Converter()
+
+        let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
+
+        let dateInterval = FixedDateInterval(start: FixedDate(225), end: FixedDate(240))
+
+        let adapterSlice = adapter[dateInterval]
+
+        let resultSubrange = Array(adapterSlice)
+
+        let expectedSubrange = [
+            "225 [14, 15]",
+            "230 [10, 2]",
+        ]
+
+        #expect(resultSubrange == expectedSubrange)
     }
 }
 
