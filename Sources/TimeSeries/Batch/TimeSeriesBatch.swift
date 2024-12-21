@@ -5,21 +5,32 @@
 //  Created by Vitali Kurlovich on 15.12.24.
 //
 
-public struct TimeSeriesBatch<Series: TimeSeriesCollection>: Hashable, Sendable
-    where Series: Hashable & Sendable,
-    Series.SubSequence: Hashable & Sendable
-{
-    private let batches: [Series]
+public protocol TimeSeriesBatchProtocol: RandomAccessCollection where Self.Element: TimeSeriesCollection, Self.SubSequence: TimeSeriesBatchProtocol {
+    associatedtype SubSequenceBatch: TimeSeriesBatchProtocol
+    var timeRange: FixedDateInterval? { get }
 
-    public init<S: Sequence>(_ batches: S) where S.Element == Series {
+    subscript(_: FixedDateInterval) -> SubSequenceBatch { get }
+}
+
+public struct TimeSeriesBatch<Batches: RandomAccessCollection>: Sendable
+    where
+    Batches: Sendable,
+    Batches.Element: TimeSeriesCollection,
+    Batches.SubSequence: Sendable,
+    Batches.Element.SubSequence: Sendable
+{
+    private let batches: Batches
+
+    public init(_ batches: Batches) {
         assert(batches.isTimeRangeIncrease)
-        self.batches = batches.filter { !$0.isEmpty }
+        self.batches = batches
     }
 }
 
-public
-extension TimeSeriesBatch {
-    var timeRange: FixedDateInterval? {
+extension TimeSeriesBatch: TimeSeriesBatchProtocol {
+    public typealias SubSequenceBatch = TimeSeriesBatch<[Batches.Element.SubSequence]>
+
+    public var timeRange: FixedDateInterval? {
         let ranges = batches.compactMap {
             $0.timeRange
         }
@@ -33,19 +44,20 @@ extension TimeSeriesBatch {
         return FixedDateInterval(start: start, end: end)
     }
 
-    subscript(_ range: FixedDateInterval) -> TimeSeriesBatch<Series.SubSequence> {
+    public subscript(_ range: FixedDateInterval) -> SubSequenceBatch {
         let batches = batches.lazy.map {
             $0[range]
         }.filter {
             !$0.isEmpty
         }
-        return .init(batches)
+        return .init(Array(batches))
     }
 }
 
 extension TimeSeriesBatch: RandomAccessCollection {
-    public typealias Index = Array<Series>.Index
-    public typealias Element = Series
+    public typealias Index = Batches.Index
+    public typealias Element = Batches.Element
+    public typealias SubSequence = TimeSeriesBatch<Batches.SubSequence>
 
     public var startIndex: Index {
         batches.startIndex
@@ -65,5 +77,9 @@ extension TimeSeriesBatch: RandomAccessCollection {
 
     public subscript(position: Index) -> Element {
         batches[position]
+    }
+
+    public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
+        SubSequence(batches[range])
     }
 }
