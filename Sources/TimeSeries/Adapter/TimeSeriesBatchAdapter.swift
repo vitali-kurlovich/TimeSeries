@@ -5,7 +5,7 @@
 //  Created by Vitali Kurlovich on 20.12.24.
 //
 
-public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable, Batch: TimeSeriesBatchProtocol>: Sendable
+public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable, Batch: TimeSeriesCollectionBatch>: Sendable
     where
 
     Batch.Index == Int,
