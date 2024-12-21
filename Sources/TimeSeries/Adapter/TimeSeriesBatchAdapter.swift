@@ -5,7 +5,8 @@
 //  Created by Vitali Kurlovich on 20.12.24.
 //
 
-public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable, Batch: TimeSeriesCollectionBatch>: Sendable
+public struct TimeSeriesBatchAdapter<Converter: TimeSeriesConverter & Sendable,
+    Batch: TimeSeriesCollectionBatch>: Sendable
     where
 
     Batch.Index == Int,
@@ -30,11 +31,7 @@ extension TimeSeriesBatchAdapter: RandomAccessCollection {
 
     public typealias Index = Int
     public typealias Indices = Range<Index>
-    public typealias SubSequence = TimeSeriesBatchAdapter<Converter, Batch.SubSequence>
-
-    public var indices: Indices {
-        startIndex ..< endIndex
-    }
+    public typealias SubSequence = TimeSeriesBatchAdapterSlice<Self>
 
     public var startIndex: Index {
         0
@@ -44,6 +41,10 @@ extension TimeSeriesBatchAdapter: RandomAccessCollection {
         batch.reduce(startIndex) { partialResult, series in
             partialResult + (series.endIndex - series.startIndex)
         }
+    }
+
+    public var indices: Indices {
+        startIndex ..< endIndex
     }
 
     public func index(before i: Index) -> Index {
@@ -71,8 +72,7 @@ extension TimeSeriesBatchAdapter: RandomAccessCollection {
     }
 
     public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
-        let batch = batch[range]
-        return SubSequence(converter: converter, batch: batch)
+        SubSequence(self, range: range)
     }
 
     public subscript(_ range: FixedDateInterval) -> TimeSeriesBatchAdapter<Converter, SubSequenceBatch>
