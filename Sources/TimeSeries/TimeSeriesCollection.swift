@@ -16,13 +16,6 @@ public protocol TimeSeriesCollection: RandomAccessCollection, FixedDateTimeBased
 
 public
 extension TimeSeriesCollection {
-    func firstIndex(withTimeGreaterThan date: FixedDate) -> Index {
-        partitioningIndex { item in
-            let itemDate = timeBase.adding(milliseconds: item.time)
-            return itemDate < date
-        }
-    }
-
     func firstIndex(withTimeGreaterThan time: Element.IntegerTime) -> Index {
         partitioningIndex { item in
             time < item.time
