@@ -16,6 +16,22 @@ public protocol TimeSeriesCollection: RandomAccessCollection, FixedDateTimeBased
 
 public
 extension TimeSeriesCollection {
+    func firstIndex(withTimeGreaterThan date: FixedDate) -> Index {
+        partitioningIndex { item in
+            let itemDate = timeBase.adding(milliseconds: item.time)
+            return itemDate < date
+        }
+    }
+
+    func firstIndex(withTimeGreaterThan time: Element.IntegerTime) -> Index {
+        partitioningIndex { item in
+            time < item.time
+        }
+    }
+}
+
+public
+extension TimeSeriesCollection {
     subscript(_ range: FixedDateInterval) -> Self.SubSequence {
         guard let timeRange, timeRange.intersects(range) else {
             return .empty
@@ -33,4 +49,9 @@ extension TimeSeriesCollection {
 
         return self[start ..< end]
     }
+}
+
+public protocol MutableTimeSeriesCollection: TimeSeriesCollection {
+    mutating
+    func updateOrInsert(_ item: Self.Element)
 }
