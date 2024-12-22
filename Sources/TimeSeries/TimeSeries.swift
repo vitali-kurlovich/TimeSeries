@@ -68,7 +68,6 @@ extension TimeSeries: MutableTimeSeriesCollection {
         }
 
         let index = firstIndex(withTimeGreaterThan: item.time)
-
         let beforeIndex = items.index(before: index)
 
         if items.indices.contains(beforeIndex) {
