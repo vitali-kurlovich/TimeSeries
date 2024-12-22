@@ -7,7 +7,7 @@
 
 public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashable, Sendable {
     public let timeBase: FixedDate
-    private let items: [Element]
+    private var items: [Element]
 
     public init(timeBase: FixedDate, items: [Element]) {
         assert(items.isTimeValueIncrease)
@@ -56,5 +56,31 @@ public
 extension TimeSeries {
     init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element {
         self.init(timeBase: series.timeBase, items: Array(series))
+    }
+}
+
+extension TimeSeries: MutableTimeSeriesCollection {
+    public mutating
+    func updateOrInsert(_ item: Self.Element) {
+        if items.isEmpty {
+            items.append(item)
+            return
+        }
+
+        let index = firstIndex(withTimeGreaterThan: item.time)
+
+        let beforeIndex = items.index(before: index)
+
+        if items.indices.contains(beforeIndex) {
+            if items[beforeIndex].time == item.time {
+                items[beforeIndex] = item
+            } else {
+                items.insert(item, at: index)
+            }
+        } else if index == endIndex {
+            items.append(item)
+        } else if index == startIndex {
+            items.insert(item, at: startIndex)
+        }
     }
 }
