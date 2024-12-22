@@ -56,6 +56,7 @@ struct TimeSeriesBatchTests {
         let batch = TimeSeriesBatch([series1, series2, series3])
 
         #expect(batch.isEmpty == false)
+        #expect(batch.index(before: 1) == 0)
         #expect(batch.count == 3)
         #expect(batch.timeRange == FixedDateInterval(start: FixedDate(110), end: FixedDate(1150)))
 
@@ -64,8 +65,33 @@ struct TimeSeriesBatchTests {
         #expect(batch[2] == series3)
     }
 
-    @Test("Sub batch")
-    func subBatch() {
+    @Test("Batch slice with FixedDateInterval")
+    func batchSlice() {
+        let batch = TimeSeriesBatch([
+            Self.series1, // 0
+            Self.series2, // 1
+            Self.series3, // 2
+            Self.series4, // 3
+            Self.series5, // 4
+            Self.series6, // 5
+        ])
+        #expect(batch.count == 6)
+
+        let slice = batch[1 ... 3]
+
+        #expect(slice.count == 3)
+
+        let expacted = TimeSeriesBatch([
+            Self.series2,
+            Self.series3,
+            Self.series4,
+        ])
+
+        #expect(Array(slice) == Array(expacted))
+    }
+
+    @Test("Batch slice with FixedDateInterval")
+    func batchSliceDateInterval() {
         let series1 = Self.series1
         let series2 = Self.series2
         let series3 = Self.series3
@@ -114,6 +140,45 @@ extension TimeSeriesBatchTests {
                                     ])
 
     static let series3 = TimeSeries(timeBase: FixedDate(1000),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                        MocItem(time: 50, index: 5),
+                                        MocItem(time: 60, index: 6),
+                                        MocItem(time: 70, index: 7),
+                                        MocItem(time: 80, index: 8),
+                                        MocItem(time: 90, index: 9),
+                                        MocItem(time: 100, index: 10),
+                                        MocItem(time: 110, index: 11),
+                                        MocItem(time: 120, index: 12),
+                                        MocItem(time: 130, index: 13),
+                                        MocItem(time: 140, index: 14),
+                                        MocItem(time: 150, index: 15),
+                                    ])
+
+    static let series4 = TimeSeries(timeBase: FixedDate(2000),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                    ])
+
+    static let series5 = TimeSeries(timeBase: FixedDate(3000),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                        MocItem(time: 50, index: 5),
+                                        MocItem(time: 60, index: 6),
+                                        MocItem(time: 70, index: 7),
+                                        MocItem(time: 80, index: 8),
+                                        MocItem(time: 90, index: 9),
+                                        MocItem(time: 100, index: 10),
+                                        MocItem(time: 110, index: 11),
+                                    ])
+
+    static let series6 = TimeSeries(timeBase: FixedDate(4000),
                                     items: [
                                         MocItem(time: 10, index: 1),
                                         MocItem(time: 20, index: 2),
