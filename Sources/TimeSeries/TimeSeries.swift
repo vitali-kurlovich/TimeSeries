@@ -77,8 +77,6 @@ extension TimeSeries: MutableTimeSeriesCollection {
             } else {
                 items.insert(item, at: index)
             }
-        } else if index == endIndex {
-            items.append(item)
         } else if index == startIndex {
             items.insert(item, at: startIndex)
         }
