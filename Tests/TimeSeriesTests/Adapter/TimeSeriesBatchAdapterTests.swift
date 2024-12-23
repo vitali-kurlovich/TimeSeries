@@ -51,6 +51,11 @@ struct TimeSeriesBatchAdapterTests {
 
         let adapterSlice = adapter[2 ... 10]
 
+        #expect(adapterSlice.index(before: 3) == 2)
+        #expect(adapterSlice.indices == 2 ..< 11)
+
+        #expect(adapterSlice[2] == "130 [10, 2]")
+
         let resultSubrange = Array(adapterSlice)
 
         let expectedSubrange = [

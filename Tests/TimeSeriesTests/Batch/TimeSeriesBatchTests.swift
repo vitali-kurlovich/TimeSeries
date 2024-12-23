@@ -31,7 +31,7 @@ struct TimeSeriesBatchTests {
                                     MocItem(time: 10, index: 1),
                                 ])
 
-        let batch = TimeSeriesBatch(CollectionOfOne(series))
+        let batch = TimeSeriesBatch([series])
 
         #expect(batch.isEmpty == false)
         #expect(batch.count == 1)
