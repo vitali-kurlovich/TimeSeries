@@ -5,12 +5,12 @@
 //  Created by Vitali Kurlovich on 15.12.24.
 //
 
-public struct TimeSeriesBatch<Batches: RandomAccessCollection>: Sendable
+public struct TimeSeriesBatch<Batches: RandomAccessCollection>: Equatable, Sendable
     where
-    Batches: Sendable,
-    Batches.Element: TimeSeriesCollection,
-    Batches.SubSequence: Sendable,
-    Batches.Element.SubSequence: Sendable
+    Batches: Equatable & Sendable,
+    Batches.Element: TimeSeriesCollection & Equatable,
+    Batches.SubSequence: Equatable & Sendable,
+    Batches.Element.SubSequence: Equatable & Sendable
 {
     private let batches: Batches
 
