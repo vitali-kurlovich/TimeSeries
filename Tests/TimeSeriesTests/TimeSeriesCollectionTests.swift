@@ -103,6 +103,8 @@ enum TimeSeriesCollectionTests {
 
             #expect(series[intervalAll] == series[0 ... 3])
 
+            #expect(series[0 ... 3][1 ... 2] == series[1 ... 2])
+
             let intervalAllFit = FixedDateInterval(start: FixedDate(110), end: FixedDate(140))
 
             #expect(series[intervalAllFit] == series[0 ... 3])
