@@ -45,6 +45,8 @@ extension TimeSeriesCollection {
 }
 
 public protocol MutableTimeSeriesCollection: TimeSeriesCollection {
+    mutating func reserveCapacity(_ minimumCapacity: Int)
+
     mutating
     func updateOrInsert(_ item: Self.Element)
 }
