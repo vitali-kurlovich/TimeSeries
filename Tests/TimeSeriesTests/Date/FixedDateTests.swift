@@ -5,10 +5,37 @@
 //  Created by Vitali Kurlovich on 14.12.24.
 //
 
+import Foundation
 import Testing
 @testable import TimeSeries
 
 struct FixedDateTests {
+    @Test("FixedDate with timeIntervalSince1970")
+    func dateWithTimeInterval() throws {
+        let result = FixedDate(timeIntervalSince1970: 1_000_000.0)
+        #expect(result == FixedDate(1_000_000_000))
+    }
+
+    @Test("FixedDate with Date")
+    func fixedDateFromDate() throws {
+        let date = Date(timeIntervalSince1970: 1_000_000.0)
+
+        let result = FixedDate(date)
+        #expect(result == FixedDate(1_000_000_000))
+    }
+
+    @Test("timeIntervalSince1970")
+    func timeIntervalSince1970() throws {
+        #expect(FixedDate(1_000_000_000).timeIntervalSince1970 == 1_000_000.0)
+    }
+
+    @Test("FixedDate with Date")
+    func dateFromFixedDate() throws {
+        let date = Date(FixedDate(1_000_000_000))
+        let expected = Date(timeIntervalSince1970: 1_000_000.0)
+        #expect(date == expected)
+    }
+
     @Test("FixedDate adding")
     func adding() throws {
         let fixedData = FixedDate(200)
