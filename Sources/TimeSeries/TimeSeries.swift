@@ -57,6 +57,10 @@ extension TimeSeries {
     init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element {
         self.init(timeBase: series.timeBase, items: Array(series))
     }
+
+    mutating func reserveCapacity(_ minimumCapacity: Int) {
+        items.reserveCapacity(minimumCapacity)
+    }
 }
 
 extension TimeSeries: MutableTimeSeriesCollection {
