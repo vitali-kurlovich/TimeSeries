@@ -8,12 +8,12 @@
 import TimeSeries
 
 struct MocItem: TimeSeriesItem {
-    typealias IntegerTime = Int32
+    typealias IntegerTime = Int16
 
-    let time: Int32
+    let time: IntegerTime
     let index: Int
 
-    func setTime(_ time: Int32) -> MocItem {
+    func setTime(_ time: IntegerTime) -> MocItem {
         MocItem(time: time, index: index)
     }
 }
