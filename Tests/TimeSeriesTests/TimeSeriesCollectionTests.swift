@@ -116,6 +116,29 @@ enum TimeSeriesCollectionTests {
 
     @Suite("Mutable")
     struct MutableTimeSeriesCollection {
+        @Test("Update timeBase")
+        func updateTimeBase() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
+
+            series.updateTimeBase(FixedDate(50))
+
+            let expected = TimeSeries(timeBase: FixedDate(50),
+                                      items: [
+                                          MocItem(time: 60, index: 1),
+                                          MocItem(time: 70, index: 2),
+                                          MocItem(time: 80, index: 3),
+                                          MocItem(time: 90, index: 4),
+                                      ])
+
+            #expect(series == expected)
+        }
+
         @Test("Insert to empty")
         func insertToEmpty() throws {
             var series = TimeSeries<MocItem>(timeBase: FixedDate(100),
