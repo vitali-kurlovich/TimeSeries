@@ -22,6 +22,9 @@ public
 extension TimeSeriesBatchAccumulator {
     mutating
     func updateOrInsert(timeBase: FixedDate, item: Element) {
+        let timeBase = timeBase.adding(milliseconds: item.time)
+        let item = item.setTime(0)
+
         guard var lastSeries else {
             var lastSeries = TimeSeries(timeBase: timeBase, items: [item])
             lastSeries.reserveCapacity(batchSize)
