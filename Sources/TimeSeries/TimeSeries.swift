@@ -6,16 +6,20 @@
 //
 
 public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashable, Sendable {
-    public let timeBase: FixedDate
     private var items: [Element]
+    private var _timeBase: FixedDate
 
     public init(timeBase: FixedDate, items: [Element]) {
         assert(items.isTimeValueIncrease)
-        self.timeBase = timeBase
+        _timeBase = timeBase
         self.items = items
     }
 
     public static var empty: Self { Self(timeBase: .zero, items: []) }
+}
+
+extension TimeSeries: FixedDateTimeBased {
+    public var timeBase: FixedDate { _timeBase }
 }
 
 extension TimeSeries: RandomAccessCollection {
@@ -57,13 +61,41 @@ extension TimeSeries {
     init<S: TimeSeriesCollection>(_ series: S) where S.Element == Self.Element {
         self.init(timeBase: series.timeBase, items: Array(series))
     }
-
-    mutating func reserveCapacity(_ minimumCapacity: Int) {
-        items.reserveCapacity(minimumCapacity)
-    }
 }
 
 extension TimeSeries: MutableTimeSeriesCollection {
+    public
+    mutating func updateTimeBase(_ timeBase: FixedDate) {
+        guard _timeBase != timeBase else {
+            return
+        }
+
+        typealias IntegerTime = Element.IntegerTime
+
+        let offset = timeBase.millisecondsSince(_timeBase)
+        _timeBase = timeBase
+
+        assert(offset > IntegerTime.min)
+        assert(offset < IntegerTime.max)
+
+        let timeOffset = Element.IntegerTime(offset)
+
+        for index in items.indices {
+            let item = items[index]
+
+            assert(Int(item.time) + Int(timeOffset) > IntegerTime.min)
+            assert(Int(item.time) + Int(timeOffset) < IntegerTime.max)
+
+            let time = item.time + timeOffset
+            let updated = item.setTime(time)
+            items[index] = updated
+        }
+    }
+
+    public mutating func reserveCapacity(_ minimumCapacity: Int) {
+        items.reserveCapacity(minimumCapacity)
+    }
+
     public mutating
     func updateOrInsert(_ item: Self.Element) {
         if items.isEmpty {
