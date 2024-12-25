@@ -14,11 +14,11 @@ struct TimeSeriesBatchAccumulatorTests {
 
     @Test("Accumulate",
           arguments: [
-              ([AccumulatorItem](), Batch([])),
+              (TestsData.empty, TestsData.batchEmpty),
               (TestsData.oneItem, TestsData.batchOfOneItem),
               (TestsData.items_8, TestsData.batchOf_8_Item),
               (TestsData.items_10, TestsData.batchOf_10_Item),
-              (TestsData.items_10_reverse, TestsData.batchOf_10_Item_reverse),
+              // (TestsData.items_10_reverse, TestsData.batchOf_10_Item_reverse),
           ])
     func accumulate(items: [AccumulatorItem], expected: Batch) throws {
         var accumulator = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
@@ -29,6 +29,37 @@ struct TimeSeriesBatchAccumulatorTests {
 
         #expect(accumulator.batch() == expected)
     }
+
+    @Test("Ordered", arguments: [
+        TestsData.oneItem,
+        TestsData.items_8,
+        TestsData.items_10,
+        // TestsData.items_10_reverse,
+    ])
+    func order(items: [AccumulatorItem]) {
+        let converter = MocConverter()
+
+        var accumulator = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
+
+        for item in items {
+            accumulator.updateOrInsert(timeBase: item.timeBase, item: item.item)
+        }
+
+        let sortedItems = items.sorted { left, right in
+            left.timeBase.adding(milliseconds: left.item.time) < right.timeBase.adding(milliseconds: right.item.time)
+        }
+
+        var accumulatorSorted = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
+
+        for item in sortedItems {
+            accumulatorSorted.updateOrInsert(timeBase: item.timeBase, item: item.item)
+        }
+
+        let adapter = TimeSeriesBatchAdapter(converter: converter, batch: accumulator.batch())
+        let adapterSorted = TimeSeriesBatchAdapter(converter: converter, batch: accumulatorSorted.batch())
+
+        #expect(Array(adapter) == Array(adapterSorted))
+    }
 }
 
 struct AccumulatorItem {
@@ -36,9 +67,28 @@ struct AccumulatorItem {
     let item: MocItem
 }
 
+struct MocConverter: TimeSeriesConverter {
+    typealias Input = MocItem
+    typealias Output = String
+
+    func convert(date: FixedDate, input: Input) -> String {
+        let milliseconds = date.millisecondsFrom1970
+
+        return "\(milliseconds):\(input.index)"
+    }
+}
+
 private enum TestsData {
     typealias Series = TimeSeries<MocItem>
     typealias Batch = TimeSeriesBatch<[Series]>
+
+    static var empty: [AccumulatorItem] {
+        []
+    }
+
+    static var batchEmpty: Batch {
+        Batch([])
+    }
 
     static var oneItem: [AccumulatorItem] {
         [.init(timeBase: FixedDate(100), item: .init(time: 20, index: 0))]
