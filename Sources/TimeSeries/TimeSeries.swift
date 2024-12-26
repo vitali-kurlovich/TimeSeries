@@ -70,21 +70,15 @@ extension TimeSeries: MutableTimeSeriesCollection {
             return
         }
 
-        typealias IntegerTime = Element.IntegerTime
+        assert(canUpdateTimeBase(to: timeBase))
 
         let offset = timeBase.millisecondsSince(_timeBase)
         _timeBase = timeBase
-
-        assert(offset > IntegerTime.min)
-        assert(offset < IntegerTime.max)
 
         let timeOffset = Element.IntegerTime(offset)
 
         for index in items.indices {
             let item = items[index]
-
-            assert(Int(item.time) + Int(timeOffset) > IntegerTime.min)
-            assert(Int(item.time) + Int(timeOffset) < IntegerTime.max)
 
             let time = item.time + timeOffset
             let updated = item.setTime(time)
