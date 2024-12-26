@@ -52,3 +52,22 @@ public protocol MutableTimeSeriesCollection: TimeSeriesCollection {
     mutating
     func updateOrInsert(_ item: Self.Element)
 }
+
+public
+extension MutableTimeSeriesCollection {
+    func canUpdateTimeBase(to newTimeBase: FixedDate) -> Bool {
+        guard timeBase != newTimeBase, let last, let first else {
+            return true
+        }
+
+        let offset = timeBase.millisecondsSince(newTimeBase)
+
+        let minTimeValue = Int(Self.Element.IntegerTime.min) + offset
+        let maxTimeValue = Int(Self.Element.IntegerTime.max) - offset
+
+        let firstTime = Int(first.time)
+        let lastTime = Int(last.time)
+
+        return firstTime < maxTimeValue && lastTime < maxTimeValue && firstTime > minTimeValue && lastTime > minTimeValue
+    }
+}
