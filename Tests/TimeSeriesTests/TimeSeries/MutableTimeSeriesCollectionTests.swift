@@ -27,6 +27,12 @@ extension MutableTimeSeriesCollectionTests.TestCase {
     }
 }
 
+/*
+ -32768
+ 32767
+
+ */
+
 struct MutableTimeSeriesCollectionTests {
     @Suite("TimeBase")
     struct TimeBase {
@@ -35,6 +41,31 @@ struct MutableTimeSeriesCollectionTests {
                   TestCase.emptySeries(newTimeBase: .zero),
                   TestCase.emptySeries(newTimeBase: FixedDate(200)),
                   TestCase.emptySeries(newTimeBase: FixedDate(300)),
+
+                  TestCase(series: Series(timeBase: FixedDate(32768 + 10), items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(32768 + 10),
+                           canUpdate: true),
+
+                  TestCase(series: Series(timeBase: FixedDate(1), items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(32768 + 10),
+                           canUpdate: true),
+
+                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(32768 + 10),
+                           canUpdate: true),
+
+                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(32768 + 11),
+                           canUpdate: false),
+
+                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(-(32767 - 10)),
+                           canUpdate: true),
+
+                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                           newTimeBase: FixedDate(-(32767 - 9)),
+                           canUpdate: false),
+
               ])
         func canUpdateTimeBase(testCase: TestCase) throws {
             #expect(testCase.series.canUpdateTimeBase(to: testCase.newTimeBase) == testCase.canUpdate)
