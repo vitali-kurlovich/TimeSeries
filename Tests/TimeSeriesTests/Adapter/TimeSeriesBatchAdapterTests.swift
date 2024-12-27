@@ -12,7 +12,7 @@ struct TimeSeriesBatchAdapterTests {
     @Test("TimeSeriesBatchAdapter")
     func convert() {
         let batch = TimeSeriesBatch(series)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
 
@@ -45,7 +45,7 @@ struct TimeSeriesBatchAdapterTests {
     @Test("TimeSeriesAdapter slice by index range")
     func convertSubrange() {
         let batch = TimeSeriesBatch(series)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
 
@@ -88,7 +88,7 @@ struct TimeSeriesBatchAdapterTests {
     @Test("TimeSeriesAdapter slice by DateInterval")
     func convertSubrangeDateInterval() {
         let batch = TimeSeriesBatch(series)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
 
@@ -108,7 +108,7 @@ struct TimeSeriesBatchAdapterTests {
 }
 
 extension TimeSeriesBatchAdapterTests {
-    private var series: [TimeSeries<TestTick>] {
+    private var series: [TimeSeries<MocTick>] {
         [
             TimeSeries(timeBase: FixedDate(100), items: ticks_1),
             TimeSeries(timeBase: FixedDate(200), items: ticks_2),
@@ -116,7 +116,7 @@ extension TimeSeriesBatchAdapterTests {
         ]
     }
 
-    private var ticks_1: [TestTick] {
+    private var ticks_1: [MocTick] {
         [
             .init(time: 20, ask: 4, bid: 5),
             .init(time: 25, ask: 14, bid: 15),
@@ -126,7 +126,7 @@ extension TimeSeriesBatchAdapterTests {
         ]
     }
 
-    private var ticks_2: [TestTick] {
+    private var ticks_2: [MocTick] {
         [
             .init(time: 20, ask: 4, bid: 5),
             .init(time: 25, ask: 14, bid: 15),
@@ -134,7 +134,7 @@ extension TimeSeriesBatchAdapterTests {
         ]
     }
 
-    private var ticks_3: [TestTick] {
+    private var ticks_3: [MocTick] {
         [
             .init(time: 30, ask: 10, bid: 2),
             .init(time: 40, ask: 10, bid: 2),

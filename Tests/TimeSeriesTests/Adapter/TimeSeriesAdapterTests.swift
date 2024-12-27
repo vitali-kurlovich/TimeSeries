@@ -12,7 +12,7 @@ struct TimeSeriesAdapterTests {
     @Test("TimeSeriesAdapter")
     func convert() {
         let series = TimeSeries(timeBase: FixedDate(200), items: ticks)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesAdapter(converter: converter, series: series)
 
@@ -35,7 +35,7 @@ struct TimeSeriesAdapterTests {
     @Test("TimeSeriesAdapter slice by index range")
     func convertSubrange() {
         let series = TimeSeries(timeBase: FixedDate(200), items: ticks)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesAdapter(converter: converter, series: series)
 
@@ -55,7 +55,7 @@ struct TimeSeriesAdapterTests {
     @Test("TimeSeriesAdapter slice by DateInterval")
     func convertSubrangeDateInterval() {
         let series = TimeSeries(timeBase: FixedDate(200), items: ticks)
-        let converter = Converter()
+        let converter = MocTickConverter()
 
         let adapter = TimeSeriesAdapter(converter: converter, series: series)
 
@@ -76,7 +76,7 @@ struct TimeSeriesAdapterTests {
 }
 
 extension TimeSeriesAdapterTests {
-    private var ticks: [TestTick] {
+    private var ticks: [MocTick] {
         [
             .init(time: 20, ask: 4, bid: 5),
             .init(time: 25, ask: 14, bid: 15),
