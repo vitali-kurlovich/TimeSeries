@@ -8,6 +8,8 @@
 import Testing
 @testable import TimeSeries
 
+enum MutableTimeSeriesCollectionTests {}
+
 extension MutableTimeSeriesCollectionTests {
     typealias Series = TimeSeries<MocItem>
 
@@ -27,7 +29,7 @@ extension MutableTimeSeriesCollectionTests.TestCase {
     }
 }
 
-struct MutableTimeSeriesCollectionTests {
+extension MutableTimeSeriesCollectionTests {
     @Suite("TimeBase")
     struct TimeBase {
         @Test("Can update timeBase",
@@ -98,233 +100,238 @@ struct MutableTimeSeriesCollectionTests {
             #expect(seriesDates == expectedDates)
         }
     }
+}
 
-    @Test("Insert to empty")
-    func insertToEmpty() throws {
-        var series = TimeSeries<MocItem>(timeBase: FixedDate(100),
-                                         items: [])
+extension MutableTimeSeriesCollectionTests {
+    @Suite("Modify items")
+    struct UpdateAndInsert {
+        @Test("Insert to empty")
+        func insertToEmpty() throws {
+            var series = TimeSeries<MocItem>(timeBase: FixedDate(100),
+                                             items: [])
 
-        series.updateOrInsert(MocItem(time: 100, index: -1))
+            series.updateOrInsert(MocItem(time: 100, index: -1))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 100, index: -1),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 100, index: -1),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Insert to begin")
-    func insertToBegin() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Insert to begin")
+        func insertToBegin() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 5, index: -1))
+            series.updateOrInsert(MocItem(time: 5, index: -1))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 5, index: -1),
-                                      MocItem(time: 10, index: 1),
-                                      MocItem(time: 20, index: 2),
-                                      MocItem(time: 30, index: 3),
-                                      MocItem(time: 40, index: 4),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 5, index: -1),
+                                          MocItem(time: 10, index: 1),
+                                          MocItem(time: 20, index: 2),
+                                          MocItem(time: 30, index: 3),
+                                          MocItem(time: 40, index: 4),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Insert to begin")
-    func insertToBegin_1() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                ])
+        @Test("Insert to begin")
+        func insertToBegin_1() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 5, index: -1))
+            series.updateOrInsert(MocItem(time: 5, index: -1))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 5, index: -1),
-                                      MocItem(time: 10, index: 1),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 5, index: -1),
+                                          MocItem(time: 10, index: 1),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Update first")
-    func updateFirst() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Update first")
+        func updateFirst() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 10, index: 10))
+            series.updateOrInsert(MocItem(time: 10, index: 10))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 10),
-                                      MocItem(time: 20, index: 2),
-                                      MocItem(time: 30, index: 3),
-                                      MocItem(time: 40, index: 4),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 10),
+                                          MocItem(time: 20, index: 2),
+                                          MocItem(time: 30, index: 3),
+                                          MocItem(time: 40, index: 4),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Update first")
-    func updateFirst_1() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                ])
+        @Test("Update first")
+        func updateFirst_1() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 10, index: 10))
+            series.updateOrInsert(MocItem(time: 10, index: 10))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 10),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 10),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Insert to end")
-    func insertToEnd() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Insert to end")
+        func insertToEnd() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 50, index: 5))
+            series.updateOrInsert(MocItem(time: 50, index: 5))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 1),
-                                      MocItem(time: 20, index: 2),
-                                      MocItem(time: 30, index: 3),
-                                      MocItem(time: 40, index: 4),
-                                      MocItem(time: 50, index: 5),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 1),
+                                          MocItem(time: 20, index: 2),
+                                          MocItem(time: 30, index: 3),
+                                          MocItem(time: 40, index: 4),
+                                          MocItem(time: 50, index: 5),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Insert to end")
-    func insertToEnd_1() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Insert to end")
+        func insertToEnd_1() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 50, index: 5))
+            series.updateOrInsert(MocItem(time: 50, index: 5))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 40, index: 4),
-                                      MocItem(time: 50, index: 5),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 40, index: 4),
+                                          MocItem(time: 50, index: 5),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Update last")
-    func updateLast() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Update last")
+        func updateLast() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 40, index: 100))
+            series.updateOrInsert(MocItem(time: 40, index: 100))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 1),
-                                      MocItem(time: 20, index: 2),
-                                      MocItem(time: 30, index: 3),
-                                      MocItem(time: 40, index: 100),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 1),
+                                          MocItem(time: 20, index: 2),
+                                          MocItem(time: 30, index: 3),
+                                          MocItem(time: 40, index: 100),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Update last")
-    func updateLast_1() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Update last")
+        func updateLast_1() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 40, index: 100))
+            series.updateOrInsert(MocItem(time: 40, index: 100))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 40, index: 100),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 40, index: 100),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Insert at mid")
-    func insertBetween() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Insert at mid")
+        func insertBetween() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 25, index: 100))
+            series.updateOrInsert(MocItem(time: 25, index: 100))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 1),
-                                      MocItem(time: 20, index: 2),
-                                      MocItem(time: 25, index: 100),
-                                      MocItem(time: 30, index: 3),
-                                      MocItem(time: 40, index: 4),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 1),
+                                          MocItem(time: 20, index: 2),
+                                          MocItem(time: 25, index: 100),
+                                          MocItem(time: 30, index: 3),
+                                          MocItem(time: 40, index: 4),
+                                      ])
 
-        #expect(series == expected)
-    }
+            #expect(series == expected)
+        }
 
-    @Test("Update")
-    func update() throws {
-        var series = TimeSeries(timeBase: FixedDate(100),
-                                items: [
-                                    MocItem(time: 10, index: 1),
-                                    MocItem(time: 20, index: 2),
-                                    MocItem(time: 30, index: 3),
-                                    MocItem(time: 40, index: 4),
-                                ])
+        @Test("Update")
+        func update() throws {
+            var series = TimeSeries(timeBase: FixedDate(100),
+                                    items: [
+                                        MocItem(time: 10, index: 1),
+                                        MocItem(time: 20, index: 2),
+                                        MocItem(time: 30, index: 3),
+                                        MocItem(time: 40, index: 4),
+                                    ])
 
-        series.updateOrInsert(MocItem(time: 10, index: 100))
-        series.updateOrInsert(MocItem(time: 20, index: 200))
-        series.updateOrInsert(MocItem(time: 30, index: 300))
-        series.updateOrInsert(MocItem(time: 40, index: 400))
+            series.updateOrInsert(MocItem(time: 10, index: 100))
+            series.updateOrInsert(MocItem(time: 20, index: 200))
+            series.updateOrInsert(MocItem(time: 30, index: 300))
+            series.updateOrInsert(MocItem(time: 40, index: 400))
 
-        let expected = TimeSeries(timeBase: FixedDate(100),
-                                  items: [
-                                      MocItem(time: 10, index: 100),
-                                      MocItem(time: 20, index: 200),
-                                      MocItem(time: 30, index: 300),
-                                      MocItem(time: 40, index: 400),
-                                  ])
+            let expected = TimeSeries(timeBase: FixedDate(100),
+                                      items: [
+                                          MocItem(time: 10, index: 100),
+                                          MocItem(time: 20, index: 200),
+                                          MocItem(time: 30, index: 300),
+                                          MocItem(time: 40, index: 400),
+                                      ])
 
-        #expect(series == expected)
+            #expect(series == expected)
+        }
     }
 }
