@@ -27,12 +27,6 @@ extension MutableTimeSeriesCollectionTests.TestCase {
     }
 }
 
-/*
- -32768
- 32767
-
- */
-
 struct MutableTimeSeriesCollectionTests {
     @Suite("TimeBase")
     struct TimeBase {
@@ -92,6 +86,16 @@ struct MutableTimeSeriesCollectionTests {
                                       ])
 
             #expect(series == expected)
+
+            let seriesDates = series.map {
+                series.timeBase.adding(milliseconds: $0.time)
+            }
+
+            let expectedDates = expected.map {
+                series.timeBase.adding(milliseconds: $0.time)
+            }
+
+            #expect(seriesDates == expectedDates)
         }
     }
 
