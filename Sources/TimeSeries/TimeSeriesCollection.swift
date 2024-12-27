@@ -62,12 +62,15 @@ extension MutableTimeSeriesCollection {
 
         let offset = timeBase.millisecondsSince(newTimeBase)
 
-        let minTimeValue = Int(Self.Element.IntegerTime.min) + offset
-        let maxTimeValue = Int(Self.Element.IntegerTime.max) - offset
+        let minTimeValue = Int(Self.Element.IntegerTime.min)
+        let maxTimeValue = Int(Self.Element.IntegerTime.max)
 
-        let firstTime = Int(first.time)
-        let lastTime = Int(last.time)
+        let firstTime = Int(first.time) - offset
+        let lastTime = Int(last.time) - offset
 
-        return firstTime < maxTimeValue && lastTime < maxTimeValue && firstTime > minTimeValue && lastTime > minTimeValue
+        return firstTime <= maxTimeValue &&
+            lastTime <= maxTimeValue &&
+            firstTime >= minTimeValue &&
+            lastTime >= minTimeValue
     }
 }
