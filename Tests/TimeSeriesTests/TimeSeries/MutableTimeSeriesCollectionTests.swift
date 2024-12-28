@@ -13,19 +13,41 @@ enum MutableTimeSeriesCollectionTests {}
 extension MutableTimeSeriesCollectionTests {
     typealias Series = TimeSeries<MocItem>
 
-    struct TestCase {
+    struct SeriesTestCase {
         let series: Series
         let newTimeBase: FixedDate
 
         let canUpdate: Bool
     }
+
+    struct TimeRangeTestCase {
+        let series: Series
+        let expectedTimeRange: FixedDateInterval
+    }
 }
 
-extension MutableTimeSeriesCollectionTests.TestCase {
-    typealias Series = TimeSeries<MocItem>
+extension MutableTimeSeriesCollectionTests.SeriesTestCase {
+    typealias Series = MutableTimeSeriesCollectionTests.Series
 
     static func emptySeries(newTimeBase: FixedDate) -> Self {
         Self(series: Series(timeBase: FixedDate(200), items: []), newTimeBase: newTimeBase, canUpdate: true)
+    }
+}
+
+extension MutableTimeSeriesCollectionTests {
+    @Suite("TimeRange")
+    struct TimeRange {
+        @Test("avalibleTimeRange", arguments: [
+            TimeRangeTestCase(series: Series(timeBase: FixedDate(32768), items: []),
+                              expectedTimeRange: FixedDateInterval(start: FixedDate(0), end: FixedDate(32767 + 32768))),
+
+            TimeRangeTestCase(series: .empty,
+                              expectedTimeRange: FixedDateInterval(start: FixedDate(-32768), end: FixedDate(32767))),
+
+        ])
+        func avalibleTimeRange(item: TimeRangeTestCase) {
+            #expect(item.series.avalibleTimeRange == item.expectedTimeRange)
+        }
     }
 }
 
@@ -34,36 +56,36 @@ extension MutableTimeSeriesCollectionTests {
     struct TimeBase {
         @Test("Can update timeBase",
               arguments: [
-                  TestCase.emptySeries(newTimeBase: .zero),
-                  TestCase.emptySeries(newTimeBase: FixedDate(200)),
-                  TestCase.emptySeries(newTimeBase: FixedDate(300)),
+                  SeriesTestCase.emptySeries(newTimeBase: .zero),
+                  SeriesTestCase.emptySeries(newTimeBase: FixedDate(200)),
+                  SeriesTestCase.emptySeries(newTimeBase: FixedDate(300)),
 
-                  TestCase(series: Series(timeBase: FixedDate(32768 + 10), items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(32768 + 10),
-                           canUpdate: true),
+                  SeriesTestCase(series: Series(timeBase: FixedDate(32768 + 10), items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(32768 + 10),
+                                 canUpdate: true),
 
-                  TestCase(series: Series(timeBase: FixedDate(1), items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(32768 + 10),
-                           canUpdate: true),
+                  SeriesTestCase(series: Series(timeBase: FixedDate(1), items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(32768 + 10),
+                                 canUpdate: true),
 
-                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(32768 + 10),
-                           canUpdate: true),
+                  SeriesTestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(32768 + 10),
+                                 canUpdate: true),
 
-                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(32768 + 11),
-                           canUpdate: false),
+                  SeriesTestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(32768 + 11),
+                                 canUpdate: false),
 
-                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(-(32767 - 10)),
-                           canUpdate: true),
+                  SeriesTestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(-(32767 - 10)),
+                                 canUpdate: true),
 
-                  TestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
-                           newTimeBase: FixedDate(-(32767 - 9)),
-                           canUpdate: false),
+                  SeriesTestCase(series: Series(timeBase: .zero, items: [.init(time: 10, index: 0)]),
+                                 newTimeBase: FixedDate(-(32767 - 9)),
+                                 canUpdate: false),
 
               ])
-        func canUpdateTimeBase(testCase: TestCase) throws {
+        func canUpdateTimeBase(testCase: SeriesTestCase) throws {
             #expect(testCase.series.canUpdateTimeBase(to: testCase.newTimeBase) == testCase.canUpdate)
         }
 
