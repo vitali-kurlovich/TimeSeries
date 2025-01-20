@@ -16,6 +16,33 @@ public protocol TimeSeriesCollection: RandomAccessCollection, FixedDateTimeBased
 
 public
 extension TimeSeriesCollection {
+    func split(maxCount: Int) -> [SubSequence] {
+        var splitted: [SubSequence] = []
+        splitted.reserveCapacity(1 + count / maxCount)
+
+        var startIndex = self.startIndex
+
+        for endIndex in indices.striding(by: maxCount).dropFirst() {
+            let rande = startIndex ..< endIndex
+            startIndex = endIndex
+
+            let slice = self[rande]
+            splitted.append(slice)
+        }
+
+        let rande = startIndex ..< endIndex
+
+        if !rande.isEmpty {
+            let slice = self[rande]
+            splitted.append(slice)
+        }
+
+        return splitted
+    }
+}
+
+public
+extension TimeSeriesCollection {
     func firstIndex(withTimeGreaterThan time: Element.IntegerTime) -> Index {
         partitioningIndex { item in
             time < item.time
