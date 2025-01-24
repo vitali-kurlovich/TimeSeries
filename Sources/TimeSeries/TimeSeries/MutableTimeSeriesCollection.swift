@@ -23,10 +23,16 @@ extension MutableTimeSeriesCollection {
         let start = timeBase.adding(milliseconds: minTimeValue)
         let end = timeBase.adding(milliseconds: maxTimeValue)
 
-        return FixedDateInterval(start: start, end: end)
+        return FixedDateInterval(start: Swift.max(timeBase, start), end: end)
     }
 
     func canUpdateTimeBase(to newTimeBase: FixedDate) -> Bool {
+        canSetTimeBase(to: newTimeBase)
+    }
+}
+
+extension TimeSeriesCollection {
+    func canSetTimeBase(to newTimeBase: FixedDate) -> Bool {
         guard timeBase != newTimeBase, let last, let first else {
             return true
         }

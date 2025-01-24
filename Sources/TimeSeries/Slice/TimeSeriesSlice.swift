@@ -8,10 +8,12 @@
 import Foundation
 
 public struct TimeSeriesSlice<Element: TimeSeriesItem>: TimeSeriesCollection, Hashable, Sendable {
+    public typealias ItemsCollection = ArraySlice<Element>
+
     public let timeBase: FixedDate
     private let items: ArraySlice<Element>
 
-    public init(timeBase: FixedDate, items: ArraySlice<Element>) {
+    public init(timeBase: FixedDate, items: ItemsCollection) {
         assert(items.isTimeValueIncrease)
 
         self.timeBase = timeBase
@@ -19,6 +21,29 @@ public struct TimeSeriesSlice<Element: TimeSeriesItem>: TimeSeriesCollection, Ha
     }
 
     public static var empty: Self { Self(timeBase: .zero, items: []) }
+
+    public func setTimeBase(_ newTimeBase: FixedDate) -> Self {
+        if timeBase == newTimeBase {
+            return self
+        }
+
+        if isEmpty {
+            return .init(timeBase: newTimeBase, items: .init())
+        }
+
+        assert(canSetTimeBase(to: newTimeBase))
+
+        let offset = newTimeBase.millisecondsSince(timeBase)
+
+        let timeOffset = Element.IntegerTime(offset)
+
+        let items = items.lazy.map { item in
+            let time = item.time + timeOffset
+            return item.setTime(time)
+        }
+
+        return .init(timeBase: newTimeBase, items: .init(items))
+    }
 }
 
 extension TimeSeriesSlice: RandomAccessCollection {

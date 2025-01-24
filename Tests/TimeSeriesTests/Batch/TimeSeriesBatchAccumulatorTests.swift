@@ -6,7 +6,7 @@
 //
 
 import Testing
-import TimeSeries
+@testable import TimeSeries
 
 struct TimeSeriesBatchAccumulatorTests {
     typealias Series = TimeSeries<MocItem>
@@ -14,67 +14,71 @@ struct TimeSeriesBatchAccumulatorTests {
 
     @Test("Accumulate",
           arguments: [
-              (TestsData.empty, TestsData.batchEmpty),
-              (TestsData.oneItem, TestsData.batchOfOneItem),
-              (TestsData.items_8, TestsData.batchOf_8_Item),
-              (TestsData.items_10, TestsData.batchOf_10_Item),
-              // (TestsData.items_10_reverse, TestsData.batchOf_10_Item_reverse),
+              TestsData.empty,
+              TestsData.oneItem,
+              TestsData.items_8,
+              TestsData.items_10,
+              TestsData.items_10_reverse,
+              TestsData.items_overflow,
           ])
-    func accumulate(items: [AccumulatorItem], expected: Batch) throws {
+    func accumulate(items: [AccumulatorItem]) throws {
         var accumulator = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
 
         for item in items {
             accumulator.updateOrInsert(timeBase: item.timeBase, item: item.item)
         }
 
-        #expect(accumulator.batch() == expected)
-    }
+        let expected = items.map { MocDateItem($0) }.sorted()
 
-    @Test("Ordered", arguments: [
-        TestsData.oneItem,
-        TestsData.items_8,
-        TestsData.items_10,
-        // TestsData.items_10_reverse,
-    ])
-    func order(items: [AccumulatorItem]) {
         let converter = MocConverter()
 
-        var accumulator = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
+        let batch = accumulator.batch()
 
-        for item in items {
-            accumulator.updateOrInsert(timeBase: item.timeBase, item: item.item)
+        let adapter = TimeSeriesBatchAdapter(converter: converter, batch: batch)
+
+        #expect(Array(adapter) == Array(expected))
+
+        if items.count > 2 {
+            #expect(batch.count < expected.count)
         }
-
-        let sortedItems = items.sorted { left, right in
-            left.timeBase.adding(milliseconds: left.item.time) < right.timeBase.adding(milliseconds: right.item.time)
-        }
-
-        var accumulatorSorted = TimeSeriesBatchAccumulator<MocItem>(batchSize: 8)
-
-        for item in sortedItems {
-            accumulatorSorted.updateOrInsert(timeBase: item.timeBase, item: item.item)
-        }
-
-        let adapter = TimeSeriesBatchAdapter(converter: converter, batch: accumulator.batch())
-        let adapterSorted = TimeSeriesBatchAdapter(converter: converter, batch: accumulatorSorted.batch())
-
-        #expect(Array(adapter) == Array(adapterSorted))
     }
 }
 
-struct AccumulatorItem {
+struct AccumulatorItem: Comparable {
     let timeBase: FixedDate
     let item: MocItem
+
+    static func < (lhs: AccumulatorItem, rhs: AccumulatorItem) -> Bool {
+        lhs.timeBase.adding(milliseconds: lhs.item.time) < rhs.timeBase.adding(milliseconds: rhs.item.time)
+    }
+}
+
+struct MocDateItem: Comparable, Equatable {
+    let date: FixedDate
+    let index: Int
+
+    static func < (lhs: MocDateItem, rhs: MocDateItem) -> Bool {
+        lhs.date < rhs.date
+    }
+}
+
+extension MocDateItem {
+    init(timeBase: FixedDate, item: MocItem) {
+        let date = timeBase.adding(milliseconds: item.time)
+        self.init(date: date, index: item.index)
+    }
+
+    init(_ item: AccumulatorItem) {
+        self.init(timeBase: item.timeBase, item: item.item)
+    }
 }
 
 struct MocConverter: TimeSeriesConverter {
     typealias Input = MocItem
-    typealias Output = String
+    typealias Output = MocDateItem
 
-    func convert(date: FixedDate, input: Input) -> String {
-        let milliseconds = date.millisecondsFrom1970
-
-        return "\(milliseconds):\(input.index)"
+    func convert(date: FixedDate, input: Input) -> Output {
+        return MocDateItem(date: date, index: input.index)
     }
 }
 
@@ -207,7 +211,7 @@ private enum TestsData {
             .init(timeBase: FixedDate(100), item: .init(time: 30, index: 2)),
             .init(timeBase: FixedDate(100), item: .init(time: 40, index: 3)),
             .init(timeBase: FixedDate(200), item: .init(time: 50, index: 4)),
-            .init(timeBase: FixedDate(200), item: .init(time: 60, index: 5)),
+            .init(timeBase: FixedDate(200), item: .init(time: 32767, index: 5)),
             .init(timeBase: FixedDate(200), item: .init(time: 70, index: 6)),
             .init(timeBase: FixedDate(200), item: .init(time: 80, index: 7)),
             .init(timeBase: FixedDate(200), item: .init(time: 90, index: 8)),

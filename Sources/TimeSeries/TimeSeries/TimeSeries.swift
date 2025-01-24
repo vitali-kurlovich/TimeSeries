@@ -16,6 +16,29 @@ public struct TimeSeries<Element: TimeSeriesItem>: TimeSeriesCollection, Hashabl
     }
 
     public static var empty: Self { Self(timeBase: .zero, items: []) }
+
+    public func setTimeBase(_ newTimeBase: FixedDate) -> Self {
+        if timeBase == newTimeBase {
+            return self
+        }
+
+        if isEmpty {
+            return .init(timeBase: newTimeBase, items: [])
+        }
+
+        assert(canSetTimeBase(to: newTimeBase))
+
+        let offset = newTimeBase.millisecondsSince(timeBase)
+
+        let timeOffset = Element.IntegerTime(offset)
+
+        let items = items.map { item in
+            let time = item.time + timeOffset
+            return item.setTime(time)
+        }
+
+        return .init(timeBase: newTimeBase, items: items)
+    }
 }
 
 extension TimeSeries: FixedDateTimeBased {
@@ -97,7 +120,7 @@ extension TimeSeries: MutableTimeSeriesCollection {
             return
         }
 
-        let index = firstIndex(withTimeGreaterThan: item.time)
+        let index = firstIndex(withTimeOffsetGreaterThan: item.time)
         let beforeIndex = items.index(before: index)
 
         if items.indices.contains(beforeIndex) {

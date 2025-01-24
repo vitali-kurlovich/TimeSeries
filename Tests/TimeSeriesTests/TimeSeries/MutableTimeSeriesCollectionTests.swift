@@ -39,10 +39,10 @@ extension MutableTimeSeriesCollectionTests {
     struct TimeRange {
         @Test("avalibleTimeRange", arguments: [
             TimeRangeTestCase(series: Series(timeBase: FixedDate(32768), items: []),
-                              expectedTimeRange: FixedDateInterval(start: FixedDate(0), end: FixedDate(32767 + 32768))),
+                              expectedTimeRange: FixedDateInterval(start: FixedDate(32768), end: FixedDate(32767 + 32768))),
 
             TimeRangeTestCase(series: .empty,
-                              expectedTimeRange: FixedDateInterval(start: FixedDate(-32768), end: FixedDate(32767))),
+                              expectedTimeRange: FixedDateInterval(start: FixedDate(0), end: FixedDate(32767))),
 
         ])
         func avalibleTimeRange(item: TimeRangeTestCase) {
