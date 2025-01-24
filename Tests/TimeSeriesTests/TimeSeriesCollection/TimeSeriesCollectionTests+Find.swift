@@ -23,34 +23,34 @@ extension TimeSeriesCollectionTests {
 
         @Test("First Index withTimeOffsetGreaterThan",
               arguments: [
-            (offset: 5, index: 0),
-            (offset: 10, index: 1),
-            (offset: 15, index: 1),
-            (offset: 20, index: 2),
-            (offset: 25, index: 2),
-            (offset: 30, index: 3),
-            (offset: 35, index: 3),
-            (offset: 40, index: 4),
-            (offset: 45, index: 4),
+                  (offset: 5, index: 0),
+                  (offset: 10, index: 1),
+                  (offset: 15, index: 1),
+                  (offset: 20, index: 2),
+                  (offset: 25, index: 2),
+                  (offset: 30, index: 3),
+                  (offset: 35, index: 3),
+                  (offset: 40, index: 4),
+                  (offset: 45, index: 4),
 
-        ])
+              ])
         func firstIndexGreaterThan(_ testData: (offset: Int16, index: Int)) throws {
             #expect(series.firstIndex(withTimeOffsetGreaterThan: testData.offset) == testData.index)
         }
 
         @Test("First Index withTimeOffsetGreaterThan",
               arguments: [
-            (offset: 5, index: 0),
-            (offset: 10, index: 0),
-            (offset: 15, index: 1),
-            (offset: 20, index: 1),
-            (offset: 25, index: 2),
-            (offset: 30, index: 2),
-            (offset: 35, index: 3),
-            (offset: 40, index: 3),
-            (offset: 45, index: 4),
+                  (offset: 5, index: 0),
+                  (offset: 10, index: 0),
+                  (offset: 15, index: 1),
+                  (offset: 20, index: 1),
+                  (offset: 25, index: 2),
+                  (offset: 30, index: 2),
+                  (offset: 35, index: 3),
+                  (offset: 40, index: 3),
+                  (offset: 45, index: 4),
 
-        ])
+              ])
         func firstIndexGreaterOrEqualThan(_ testData: (offset: Int16, index: Int)) throws {
             #expect(series.firstIndex(withTimeOffsetGreaterOrEqualThan: testData.offset) == testData.index)
         }
