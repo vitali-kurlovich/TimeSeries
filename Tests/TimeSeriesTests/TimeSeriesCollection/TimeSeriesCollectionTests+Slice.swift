@@ -103,3 +103,25 @@ extension TimeSeriesCollectionTests {
         }
     }
 }
+
+private enum TestsData {
+    static let series = TimeSeries(timeBase: FixedDate(100),
+                                   items: Self.seriesItems)
+
+    static let seriesItems: [MocItem] = [
+        MocItem(time: 10, index: 1), // 0
+        MocItem(time: 20, index: 2), // 1
+        MocItem(time: 30, index: 3), // 2
+        MocItem(time: 40, index: 4), // 3
+
+        MocItem(time: 100, index: 5), // 4
+        MocItem(time: 200, index: 6), // 5
+        MocItem(time: 300, index: 7), // 6
+        MocItem(time: 400, index: 8), // 7
+
+        MocItem(time: 500, index: 9), // 8
+        MocItem(time: 600, index: 10), // 9
+        MocItem(time: 700, index: 11), // 10
+        MocItem(time: 800, index: 12), // 11
+    ]
+}
