@@ -137,3 +137,55 @@ enum TimeSeriesCollectionTests {
         }
     }
 }
+
+extension TimeSeriesCollectionTests {
+    @Suite("Accees items")
+    struct TimeSeriesCollectionSubscription {
+        typealias Series = TimeSeries<MocItem>
+
+        private var series: Series {
+            Series(timeBase: FixedDate(1000),
+                   items: [
+                       MocItem(time: 100, index: 0), // 0
+                       MocItem(time: 200, index: 1), // 1
+                       MocItem(time: 300, index: 2), // 2
+                       MocItem(time: 400, index: 3), // 3
+                       MocItem(time: 500, index: 4), // 4
+                   ])
+        }
+
+        @Test("Element by position", arguments: [
+            (index: 0, expected: (date: FixedDate(1100), item: MocItem(time: 100, index: 0))),
+            (index: 1, expected: (date: FixedDate(1200), item: MocItem(time: 200, index: 1))),
+            (index: 2, expected: (date: FixedDate(1300), item: MocItem(time: 300, index: 2))),
+            (index: 3, expected: (date: FixedDate(1400), item: MocItem(time: 400, index: 3))),
+            (index: 4, expected: (date: FixedDate(1500), item: MocItem(time: 500, index: 4))),
+        ])
+        func element(_ test: (index: Int, expected: (date: FixedDate, item: MocItem))) {
+            #expect(series.element(at: test.index).date == test.expected.date)
+            #expect(series.element(at: test.index).item == test.expected.item)
+        }
+
+        @Test("Elements", arguments: [
+            (index: 0, expected: (date: FixedDate(1100), item: MocItem(time: 100, index: 0))),
+            (index: 1, expected: (date: FixedDate(1200), item: MocItem(time: 200, index: 1))),
+            (index: 2, expected: (date: FixedDate(1300), item: MocItem(time: 300, index: 2))),
+            (index: 3, expected: (date: FixedDate(1400), item: MocItem(time: 400, index: 3))),
+            (index: 4, expected: (date: FixedDate(1500), item: MocItem(time: 500, index: 4))),
+        ])
+
+        func elements(_ test: (index: Int, expected: (date: FixedDate, item: MocItem))) {
+            let elements = series.elements()[0 ..< 5]
+            #expect(elements[test.index].date == test.expected.date)
+            #expect(elements[test.index].item == test.expected.item)
+
+            #expect(elements.startIndex == 0)
+            #expect(elements.endIndex == 5)
+        }
+    }
+
+    @Suite("Accees items in slice")
+    struct TimeSeriesCollectionSliceSubscription {
+        typealias Series = TimeSeries<MocItem>.SubSequence
+    }
+}

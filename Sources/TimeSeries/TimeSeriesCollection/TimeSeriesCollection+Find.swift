@@ -2,61 +2,27 @@
 //  TimeSeriesCollection+Find.swift
 //  TimeSeries
 //
-//  Created by Vitali Kurlovich on 24.01.25.
+//  Created by Vitali Kurlovich on 25.01.25.
 //
 
+public
 extension TimeSeriesCollection {
-    func firstIndex(withTimeOffsetGreaterThan timeOffset: Element.IntegerTime) -> Index? {
-        guard let first, let last, last.time > timeOffset else { return nil }
-
-        if first.time > timeOffset {
-            return startIndex
+    subscript(_ time: FixedDate) -> Element? {
+        guard let index = index(with: time) else {
+            return nil
         }
 
-        return partitioningIndex { item in
-            timeOffset < item.time
-        }
-    }
-
-    func firstIndex(withTimeOffsetGreaterOrEqualThan timeOffset: Element.IntegerTime) -> Index? {
-        guard let first, let last, last.time >= timeOffset else { return nil }
-
-        if first.time >= timeOffset {
-            return startIndex
-        }
-
-        return partitioningIndex { item in
-            timeOffset <= item.time
-        }
+        return self[index]
     }
 }
 
-extension TimeSeriesCollection {
-    func lastIndex(withTimeOffsetLessThan timeOffset: Element.IntegerTime) -> Index? {
-        guard let first, let last, first.time < timeOffset else { return nil }
-
-        if last.time < timeOffset {
-            return self.index(before: endIndex)
+public
+extension TimeSeriesElements {
+    subscript(_ time: FixedDate) -> Element? {
+        guard let index = collection.index(with: time) else {
+            return nil
         }
 
-        let index = partitioningIndex { item in
-            !(item.time < timeOffset)
-        }
-
-        return self.index(before: index)
-    }
-
-    func lastIndex(withTimeOffsetLessOrEqualThan timeOffset: Element.IntegerTime) -> Index? {
-        guard let first, let last, first.time <= timeOffset else { return nil }
-
-        if last.time <= timeOffset {
-            return self.index(before: endIndex)
-        }
-
-        let index = partitioningIndex { item in
-            !(item.time <= timeOffset)
-        }
-
-        return self.index(before: index)
+        return collection.element(at: index)
     }
 }
