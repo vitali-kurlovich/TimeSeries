@@ -11,7 +11,6 @@ extension TimeSeriesCollection {
         guard let index = index(with: time) else {
             return nil
         }
-
         return self[index]
     }
 }

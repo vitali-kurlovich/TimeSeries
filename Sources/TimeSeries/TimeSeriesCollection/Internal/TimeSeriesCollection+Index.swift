@@ -9,6 +9,13 @@ internal
 extension TimeSeriesCollection {
     typealias TimeOffset = Self.Element.IntegerTime
 
+    var timeOffsetAvalibleRange: ClosedRange<Int> {
+        let minOffset = Int(TimeOffset.min)
+        let maxOffset = Int(TimeOffset.max)
+
+        return minOffset ... maxOffset
+    }
+
     func index(with timeOffset: TimeOffset) -> Index? {
         guard let first, let last, (first.time ... last.time).contains(timeOffset) else { return nil }
 
