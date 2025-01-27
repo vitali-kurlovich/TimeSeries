@@ -8,13 +8,16 @@
 internal
 extension TimeSeriesCollection {
     func index(with time: FixedDate) -> Index? {
-        let offset = timeBase.millisecondsSince(time)
+        for index in indices {
+            let item = self[index]
+            let date = timeBase.adding(milliseconds: item.time)
 
-        guard timeOffsetAvalibleRange.contains(offset) else {
-            return nil
+            if date == time {
+                return index
+            }
         }
 
-        return index(with: TimeOffset(offset))
+        return nil
     }
 }
 
