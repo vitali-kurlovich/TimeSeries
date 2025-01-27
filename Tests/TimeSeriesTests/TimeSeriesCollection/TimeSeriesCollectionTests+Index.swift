@@ -55,7 +55,7 @@ extension TimeSeriesCollectionTests {
                   (time: FixedDate(130), index: 2),
                   (time: FixedDate(135), index: nil),
                   (time: FixedDate(140), index: 3),
-                  (time: FixedDate(145), index: nil)
+                  (time: FixedDate(145), index: nil),
               ])
         func index(_ test: (time: FixedDate, index: Int?)) throws {
             let series = self.series
@@ -74,7 +74,7 @@ extension TimeSeriesCollectionTests {
                   (time: FixedDate(140), index: 3),
                   (time: FixedDate(145), index: nil),
                   (time: FixedDate(150), index: 4),
-                  (time: FixedDate(155), index: nil)
+                  (time: FixedDate(155), index: nil),
               ])
         func index_2(_ test: (time: FixedDate, index: Int?)) throws {
             let series = seriesSecond
@@ -137,7 +137,7 @@ extension TimeSeriesCollectionTests {
             Series(timeBase: FixedDate(100), items: [])
         }
 
-        @Test("First Index withTimeOffsetGreaterThan",
+        @Test("First Index greater",
               arguments: [
                   (time: FixedDate(105), index: 0), // 110
                   (time: FixedDate(110), index: 1), // 120
@@ -155,7 +155,7 @@ extension TimeSeriesCollectionTests {
             #expect(series.firstIndex(greater: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetGreaterThan",
+        @Test("First Index greater",
               arguments: [
                   (time: FixedDate(105), index: 0), // 110
                   (time: FixedDate(110), index: 1), // 120
@@ -193,7 +193,7 @@ extension TimeSeriesCollectionTests {
             #expect(series.firstIndex(greater: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetGreaterThan for one item series")
+        @Test("First Index greater for one item series")
         func firstIndexGreaterThanOfOne() throws {
             let series = seriesOne
             #expect(series.firstIndex(greater: FixedDate(0)) == 0)
@@ -202,7 +202,7 @@ extension TimeSeriesCollectionTests {
             #expect(series.firstIndex(greater: FixedDate(120)) == nil)
         }
 
-        @Test("First Index withTimeOffsetGreaterThan for empty series")
+        @Test("First Index greater for empty series")
         func firstIndexGreaterThan() throws {
             let series = emptySeries
 
@@ -212,73 +212,64 @@ extension TimeSeriesCollectionTests {
             #expect(series.firstIndex(greater: FixedDate(120)) == nil)
         }
 
-        @Test("First Index withTimeOffsetGreaterOrEqualThan",
+        @Test("First Index greaterOrEqual",
               arguments: [
-                  (offset: 5, index: 0), // 10
-                  (offset: 10, index: 0), // 10
-                  (offset: 15, index: 1), // 20
-                  (offset: 20, index: 1), // 20
-                  (offset: 25, index: 2), // 30
-                  (offset: 30, index: 2), // 30
-                  (offset: 35, index: 3), // 40
-                  (offset: 40, index: 3), // 40
-                  (offset: 45, index: nil),
+                  (time: FixedDate(105), index: 0), // 10
+                  (time: FixedDate(110), index: 0), // 10
+                  (time: FixedDate(115), index: 1), // 20
+                  (time: FixedDate(120), index: 1), // 20
+                  (time: FixedDate(125), index: 2), // 30
+                  (time: FixedDate(130), index: 2), // 30
+                  (time: FixedDate(135), index: 3), // 40
+                  (time: FixedDate(140), index: 3), // 40
+                  (time: FixedDate(145), index: nil),
 
               ])
-        func firstIndexGreaterOrEqualThan(_ test: (offset: Int16, index: Int?)) throws {
+        func firstIndexGreaterOrEqualThan(_ test: (time: FixedDate, index: Int?)) throws {
             let series = self.series
-            #expect(series.firstIndex(withTimeOffsetGreaterOrEqualThan: test.offset) == test.index)
 
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.firstIndex(greaterOrEqual: time) == test.index)
+            #expect(series.firstIndex(greaterOrEqual: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetGreaterOrEqualThan",
+        @Test("First Index greaterOrEqual",
               arguments: [
-                  (offset: 5, index: 0), // 10
-                  (offset: 10, index: 0), // 10
-                  (offset: 15, index: 1), // 20
-                  (offset: 20, index: 1), // 20
-                  (offset: 25, index: 2), // 30
-                  (offset: 30, index: 2), // 30
-                  (offset: 35, index: 3), // 40
-                  (offset: 40, index: 3), // 40
-                  (offset: 45, index: 4), // 50
-                  (offset: 50, index: 4), // 50
-                  (offset: 55, index: nil),
+                  (time: FixedDate(105), index: 0), // 10
+                  (time: FixedDate(110), index: 0), // 10
+                  (time: FixedDate(115), index: 1), // 20
+                  (time: FixedDate(120), index: 1), // 20
+                  (time: FixedDate(125), index: 2), // 30
+                  (time: FixedDate(130), index: 2), // 30
+                  (time: FixedDate(135), index: 3), // 40
+                  (time: FixedDate(140), index: 3), // 40
+                  (time: FixedDate(145), index: 4), // 50
+                  (time: FixedDate(150), index: 4), // 50
+                  (time: FixedDate(155), index: nil),
               ])
-        func firstIndexGreaterOrEqualThan_(_ test: (offset: Int16, index: Int?)) throws {
+        func firstIndexGreaterOrEqualThan_(_ test: (time: FixedDate, index: Int?)) throws {
             let series = seriesSecond
-            #expect(series.firstIndex(withTimeOffsetGreaterOrEqualThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.firstIndex(greaterOrEqual: time) == test.index)
+            #expect(series.firstIndex(greaterOrEqual: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetGreaterOrEqualThan silec[2...3]",
+        @Test("First Index greaterOrEqual silec[2...3]",
               arguments: [
-                  (offset: 5, index: 2), // 10
-                  (offset: 10, index: 2), // 10
-                  (offset: 15, index: 2), // 20
-                  (offset: 20, index: 2), // 20
-                  (offset: 25, index: 2), // 30
-                  (offset: 30, index: 2), // 30
-                  (offset: 35, index: 3), // 40
-                  (offset: 40, index: 3), // 40
-                  (offset: 45, index: nil), // 50
-                  (offset: 50, index: nil), // 50
-                  (offset: 55, index: nil),
+                  (time: FixedDate(105), index: 2), // 10
+                  (time: FixedDate(110), index: 2), // 10
+                  (time: FixedDate(115), index: 2), // 20
+                  (time: FixedDate(120), index: 2), // 20
+                  (time: FixedDate(125), index: 2), // 30
+                  (time: FixedDate(130), index: 2), // 30
+                  (time: FixedDate(135), index: 3), // 40
+                  (time: FixedDate(140), index: 3), // 40
+                  (time: FixedDate(145), index: nil), // 50
+                  (time: FixedDate(150), index: nil), // 50
+                  (time: FixedDate(155), index: nil),
               ])
-        func firstIndexGreaterOrEqualThanSlice(_ test: (offset: Int16, index: Int?)) throws {
+        func firstIndexGreaterOrEqualThanSlice(_ test: (time: FixedDate, index: Int?)) throws {
             let series = seriesSecond[2 ... 3]
-
-            #expect(series.firstIndex(withTimeOffsetGreaterOrEqualThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.firstIndex(greaterOrEqual: time) == test.index)
+            #expect(series.firstIndex(greaterOrEqual: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetGreaterOrEqualThan for one item series")
+        @Test("First Index greaterOrEqual for one item series")
         func firstIndexGreaterOrEqualThanOfOne() throws {
             let series = seriesOne
 
@@ -288,7 +279,7 @@ extension TimeSeriesCollectionTests {
             #expect(series.firstIndex(greaterOrEqual: FixedDate(120)) == nil)
         }
 
-        @Test("First Index withTimeOffsetGreaterOrEqualThan for empty series")
+        @Test("First Index greaterOrEqual for empty series")
         func firstIndexGreaterOrEqualThan() throws {
             let series = emptySeries
 
@@ -337,58 +328,65 @@ extension TimeSeriesCollectionTests {
             Series(timeBase: FixedDate(100), items: [])
         }
 
-        @Test("Last Index withTimeOffsetLessThan",
+        @Test("Last Index less",
               arguments: [
-                  (offset: 5, index: nil),
-                  (offset: 10, index: nil),
-                  (offset: 15, index: 0), // 10
-                  (offset: 20, index: 0), // 10
-                  (offset: 25, index: 1), // 20
-                  (offset: 30, index: 1), // 20
-                  (offset: 35, index: 2), // 30
-                  (offset: 40, index: 2), // 30
-                  (offset: 45, index: 3), // 40
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: nil),
+                  (time: FixedDate(115), index: 0), // 10
+                  (time: FixedDate(120), index: 0), // 10
+                  (time: FixedDate(125), index: 1), // 20
+                  (time: FixedDate(130), index: 1), // 20
+                  (time: FixedDate(135), index: 2), // 30
+                  (time: FixedDate(140), index: 2), // 30
+                  (time: FixedDate(145), index: 3), // 40
 
               ])
-        func lastIndexLessThan(_ test: (offset: Int16, index: Int?)) throws {
+        func lastIndexLess(_ test: (time: FixedDate, index: Int?)) throws {
             let series = self.series
-
-            #expect(series.lastIndex(withTimeOffsetLessThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.lastIndex(less: time) == test.index)
+            #expect(series.lastIndex(less: test.time) == test.index)
         }
 
-        @Test("Last Index withTimeOffsetLessThan",
+        @Test("Last Index less",
               arguments: [
-                  (offset: 5, index: nil),
-                  (offset: 10, index: nil),
-                  (offset: 15, index: 0), // 10
-                  (offset: 20, index: 0), // 10
-                  (offset: 25, index: 1), // 20
-                  (offset: 30, index: 1), // 20
-                  (offset: 35, index: 2), // 30
-                  (offset: 40, index: 2), // 30
-                  (offset: 45, index: 3), // 40
-                  (offset: 50, index: 3), // 40
-                  (offset: 55, index: 4), // 50
-
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: nil),
+                  (time: FixedDate(115), index: 0), // 10
+                  (time: FixedDate(120), index: 0), // 10
+                  (time: FixedDate(125), index: 1), // 20
+                  (time: FixedDate(130), index: 1), // 20
+                  (time: FixedDate(135), index: 2), // 30
+                  (time: FixedDate(140), index: 2), // 30
+                  (time: FixedDate(145), index: 3), // 40
+                  (time: FixedDate(150), index: 3), // 40
+                  (time: FixedDate(155), index: 4), // 50
               ])
-        func lastIndexLessThan_(_ test: (offset: Int16, index: Int?)) throws {
+        func lastIndexLess_(_ test: (time: FixedDate, index: Int?)) throws {
             let series = seriesSecond
-            #expect(series.lastIndex(withTimeOffsetLessThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.lastIndex(less: time) == test.index)
+            #expect(series.lastIndex(less: test.time) == test.index)
         }
 
-        @Test("Last Index withTimeOffsetLessThan for series of one")
-        func lastIndexLessThanOfOne() throws {
-            let series = seriesOne
+        @Test("Last Index less slice[2..3]",
+              arguments: [
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: nil),
+                  (time: FixedDate(115), index: nil),
+                  (time: FixedDate(120), index: nil),
+                  (time: FixedDate(125), index: nil),
+                  (time: FixedDate(130), index: nil),
+                  (time: FixedDate(135), index: 2), // 130
+                  (time: FixedDate(140), index: 2), // 130
+                  (time: FixedDate(145), index: 3), // 140
+                  (time: FixedDate(150), index: 3), // 140
+                  (time: FixedDate(155), index: 3), // 140
+              ])
+        func lastIndexLessSlice(_ test: (time: FixedDate, index: Int?)) throws {
+            let series = seriesSecond[2 ... 3]
+            #expect(series.lastIndex(less: test.time) == test.index)
+        }
 
-            #expect(series.lastIndex(withTimeOffsetLessThan: 0) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessThan: 10) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessThan: 20) == 0)
+        @Test("Last Index less for series of one")
+        func lastIndexLessOfOne() throws {
+            let series = seriesOne
 
             #expect(series.lastIndex(less: FixedDate(0)) == nil)
             #expect(series.lastIndex(less: FixedDate(100)) == nil)
@@ -396,12 +394,9 @@ extension TimeSeriesCollectionTests {
             #expect(series.lastIndex(less: FixedDate(120)) == 0)
         }
 
-        @Test("Last Index withTimeOffsetLessThan for empty series")
-        func lastIndexLessThan() throws {
+        @Test("Last Index less for empty series")
+        func lastIndexLess() throws {
             let series = emptySeries
-            #expect(series.lastIndex(withTimeOffsetLessThan: 0) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessThan: 10) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessThan: 20) == nil)
 
             #expect(series.lastIndex(less: FixedDate(0)) == nil)
             #expect(series.lastIndex(less: FixedDate(100)) == nil)
@@ -409,57 +404,66 @@ extension TimeSeriesCollectionTests {
             #expect(series.lastIndex(less: FixedDate(120)) == nil)
         }
 
-        @Test("Last Index withTimeOffsetLessOrEqualThan",
+        @Test("Last Index lessOrEqual",
               arguments: [
-                  (offset: 5, index: nil),
-                  (offset: 10, index: 0), // 10
-                  (offset: 15, index: 0), // 10
-                  (offset: 20, index: 1), // 20
-                  (offset: 25, index: 1), // 20
-                  (offset: 30, index: 2), // 30
-                  (offset: 35, index: 2), // 30
-                  (offset: 40, index: 3), // 40
-                  (offset: 45, index: 3), // 40
-
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: 0), // 10
+                  (time: FixedDate(115), index: 0), // 10
+                  (time: FixedDate(120), index: 1), // 20
+                  (time: FixedDate(125), index: 1), // 20
+                  (time: FixedDate(130), index: 2), // 30
+                  (time: FixedDate(135), index: 2), // 30
+                  (time: FixedDate(140), index: 3), // 40
+                  (time: FixedDate(145), index: 3), // 40
               ])
-        func lastIndexLessOrEqualThan(_ test: (offset: Int16, index: Int?)) throws {
+        func lastIndexLessOrEqualThan(_ test: (time: FixedDate, index: Int?)) throws {
             let series = self.series
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.lastIndex(lessOrEqual: time) == test.index)
+            #expect(series.lastIndex(lessOrEqual: test.time) == test.index)
         }
 
-        @Test("First Index withTimeOffsetLessOrEqualThan",
+        @Test("First Index lessOrEqual",
               arguments: [
-                  (offset: 5, index: nil),
-                  (offset: 10, index: 0), // 10
-                  (offset: 15, index: 0), // 10
-                  (offset: 20, index: 1), // 20
-                  (offset: 25, index: 1), // 20
-                  (offset: 30, index: 2), // 30
-                  (offset: 35, index: 2), // 30
-                  (offset: 40, index: 3), // 40
-                  (offset: 45, index: 3), // 40
-                  (offset: 50, index: 4), // 50
-                  (offset: 55, index: 4), // 50
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: 0), // 10
+                  (time: FixedDate(115), index: 0), // 10
+                  (time: FixedDate(120), index: 1), // 20
+                  (time: FixedDate(125), index: 1), // 20
+                  (time: FixedDate(130), index: 2), // 30
+                  (time: FixedDate(135), index: 2), // 30
+                  (time: FixedDate(140), index: 3), // 40
+                  (time: FixedDate(145), index: 3), // 40
+                  (time: FixedDate(150), index: 4), // 50
+                  (time: FixedDate(155), index: 4), // 50
 
               ])
-        func lastIndexLessOrEqualThan_(_ test: (offset: Int16, index: Int?)) throws {
+        func lastIndexLessOrEqualThan_(_ test: (time: FixedDate, index: Int?)) throws {
             let series = seriesSecond
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: test.offset) == test.index)
-
-            let time = series.timeBase.adding(milliseconds: test.offset)
-            #expect(series.lastIndex(lessOrEqual: time) == test.index)
+            #expect(series.lastIndex(lessOrEqual: test.time) == test.index)
         }
 
-        @Test("Last Index withTimeOffsetLessOrEqualThan for series of one")
-        func lastIndexLessOrEqualThanOfOne() throws {
-            let series = seriesOne
+        @Test("First Index lessOrEqual slice[2...3]",
+              arguments: [
+                  (time: FixedDate(105), index: nil),
+                  (time: FixedDate(110), index: nil),
+                  (time: FixedDate(115), index: nil),
+                  (time: FixedDate(120), index: nil),
+                  (time: FixedDate(125), index: nil),
+                  (time: FixedDate(130), index: 2), // 130
+                  (time: FixedDate(135), index: 2), // 130
+                  (time: FixedDate(140), index: 3), // 140
+                  (time: FixedDate(145), index: 3), // 140
+                  (time: FixedDate(150), index: 3), // 140
+                  (time: FixedDate(155), index: 3), // 140
 
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 0) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 10) == 0)
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 20) == 0)
+              ])
+        func lastIndexLessOrEqualSlice(_ test: (time: FixedDate, index: Int?)) throws {
+            let series = seriesSecond[2 ... 3]
+            #expect(series.lastIndex(lessOrEqual: test.time) == test.index)
+        }
+
+        @Test("Last Index lessOrEqual for series of one")
+        func lastIndexLessOrEqualOfOne() throws {
+            let series = seriesOne
 
             #expect(series.lastIndex(lessOrEqual: FixedDate(0)) == nil)
             #expect(series.lastIndex(lessOrEqual: FixedDate(100)) == nil)
@@ -467,12 +471,9 @@ extension TimeSeriesCollectionTests {
             #expect(series.lastIndex(lessOrEqual: FixedDate(120)) == 0)
         }
 
-        @Test("Last Index withTimeOffsetLessOrEqualThan for empty series")
+        @Test("Last Index lessOrEqual for empty series")
         func lastIndexLessOrEqualThan() throws {
             let series = emptySeries
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 0) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 10) == nil)
-            #expect(series.lastIndex(withTimeOffsetLessOrEqualThan: 20) == nil)
 
             #expect(series.lastIndex(lessOrEqual: FixedDate(0)) == nil)
             #expect(series.lastIndex(lessOrEqual: FixedDate(100)) == nil)
