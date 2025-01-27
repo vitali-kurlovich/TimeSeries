@@ -115,22 +115,15 @@ extension TimeSeries: MutableTimeSeriesCollection {
 
     public mutating
     func updateOrInsert(_ item: Self.Element) {
-        if items.isEmpty {
-            items.append(item)
-            return
-        }
-
-        let index = firstIndex(withTimeOffsetGreaterThan: item.time)
-        let beforeIndex = items.index(before: index)
-
-        if items.indices.contains(beforeIndex) {
-            if items[beforeIndex].time == item.time {
-                items[beforeIndex] = item
+        let time = timeBase.adding(milliseconds: item.time)
+        if let index = firstIndex(greaterOrEqual: time) {
+            if items[index].time == item.time {
+                items[index] = item
             } else {
                 items.insert(item, at: index)
             }
-        } else if index == startIndex {
-            items.insert(item, at: startIndex)
+        } else {
+            items.append(item)
         }
     }
 }
