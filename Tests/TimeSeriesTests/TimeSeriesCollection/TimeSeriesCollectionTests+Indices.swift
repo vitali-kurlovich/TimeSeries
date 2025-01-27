@@ -72,6 +72,23 @@ extension TimeSeriesCollectionTests {
             #expect(series.indices(for: test.range) == test.expected)
         }
 
+        @Test("Indices by ClosedRange slice[1...3]", arguments: [
+            (range: FixedDate(0) ... FixedDate(100), expected: nil),
+            (range: FixedDate(100) ... FixedDate(110), expected: nil),
+            (range: FixedDate(110) ... FixedDate(120), expected: 1 ... 1),
+            (range: FixedDate(110) ... FixedDate(130), expected: 1 ... 2),
+            (range: FixedDate(110) ... FixedDate(140), expected: 1 ... 3),
+            (range: FixedDate(130) ... FixedDate(150), expected: 2 ... 3),
+            (range: FixedDate(130) ... FixedDate(160), expected: 2 ... 3),
+            (range: FixedDate(140) ... FixedDate(160), expected: 3 ... 3),
+            (range: FixedDate(150) ... FixedDate(160), expected: nil),
+            (range: FixedDate(160) ... FixedDate(170), expected: nil),
+        ])
+        func rangeSlice(_ test: (range: ClosedRange<FixedDate>, expected: ClosedRange<Int>?)) {
+            let series = series[1 ... 3]
+            #expect(series.indices(for: test.range) == test.expected)
+        }
+
         @Test("Indices by PartialRangeFrom", arguments: [
             (range: FixedDate(0)..., expected: 0 ... 4),
             (range: FixedDate(100)..., expected: 0 ... 4),
@@ -87,6 +104,21 @@ extension TimeSeriesCollectionTests {
             #expect(series.indices(for: test.range) == test.expected)
         }
 
+        @Test("Indices by PartialRangeFrom slice[1...3]", arguments: [
+            (range: FixedDate(0)..., expected: 1 ... 3),
+            (range: FixedDate(100)..., expected: 1 ... 3),
+            (range: FixedDate(110)..., expected: 1 ... 3),
+            (range: FixedDate(120)..., expected: 1 ... 3),
+            (range: FixedDate(130)..., expected: 2 ... 3),
+            (range: FixedDate(140)..., expected: 3 ... 3),
+            (range: FixedDate(150)..., expected: nil),
+            (range: FixedDate(160)..., expected: nil),
+        ])
+        func rangeSlice(_ test: (range: PartialRangeFrom<FixedDate>, expected: ClosedRange<Int>?)) {
+            let series = series[1 ... 3]
+            #expect(series.indices(for: test.range) == test.expected)
+        }
+
         @Test("Indices by PartialRangeThrough", arguments: [
             (range: ...FixedDate(100), expected: nil),
             (range: ...FixedDate(110), expected: 0 ... 0),
@@ -95,14 +127,25 @@ extension TimeSeriesCollectionTests {
             (range: ...FixedDate(140), expected: 0 ... 3),
             (range: ...FixedDate(150), expected: 0 ... 4),
             (range: ...FixedDate(160), expected: 0 ... 4),
-            (range: ...FixedDate(160), expected: 0 ... 4),
         ])
         func range(_ test: (range: PartialRangeThrough<FixedDate>, expected: ClosedRange<Int>?)) {
             let series = series
             #expect(series.indices(for: test.range) == test.expected)
         }
 
-        // PartialRangeUpTo
+        @Test("Indices by PartialRangeThrough slice[1...3]", arguments: [
+            (range: ...FixedDate(100), expected: nil),
+            (range: ...FixedDate(110), expected: nil),
+            (range: ...FixedDate(120), expected: 1 ... 1),
+            (range: ...FixedDate(130), expected: 1 ... 2),
+            (range: ...FixedDate(140), expected: 1 ... 3),
+            (range: ...FixedDate(150), expected: 1 ... 3),
+            (range: ...FixedDate(160), expected: 1 ... 3),
+        ])
+        func rangeSlice(_ test: (range: PartialRangeThrough<FixedDate>, expected: ClosedRange<Int>?)) {
+            let series = series[1 ... 3]
+            #expect(series.indices(for: test.range) == test.expected)
+        }
 
         @Test("Indices by PartialRangeUpTo", arguments: [
             (range: ..<FixedDate(100), expected: nil),
@@ -115,6 +158,20 @@ extension TimeSeriesCollectionTests {
         ])
         func range(_ test: (range: PartialRangeUpTo<FixedDate>, expected: ClosedRange<Int>?)) {
             let series = series
+            #expect(series.indices(for: test.range) == test.expected)
+        }
+
+        @Test("Indices by PartialRangeUpTo slice[1...3]", arguments: [
+            (range: ..<FixedDate(100), expected: nil),
+            (range: ..<FixedDate(110), expected: nil),
+            (range: ..<FixedDate(120), expected: nil),
+            (range: ..<FixedDate(130), expected: 1 ... 1),
+            (range: ..<FixedDate(140), expected: 1 ... 2),
+            (range: ..<FixedDate(150), expected: 1 ... 3),
+            (range: ..<FixedDate(160), expected: 1 ... 3),
+        ])
+        func rangeSlice(_ test: (range: PartialRangeUpTo<FixedDate>, expected: ClosedRange<Int>?)) {
+            let series = series[1 ... 3]
             #expect(series.indices(for: test.range) == test.expected)
         }
     }
