@@ -95,38 +95,3 @@ extension TimeSeriesCollection {
         return self.index(before: index)
     }
 }
-
-/*
-
- internal
- extension TimeSeriesCollection {
-     func lastIndex(withTimeOffsetLessThan timeOffset: TimeOffset) -> Index? {
-         guard let first, let last, first.time < timeOffset else { return nil }
-
-         if last.time < timeOffset {
-             return self.index(before: endIndex)
-         }
-
-         let index = partitioningIndex { item in
-             !(item.time < timeOffset)
-         }
-
-         return self.index(before: index)
-     }
-
-     func lastIndex(withTimeOffsetLessOrEqualThan timeOffset: TimeOffset) -> Index? {
-         guard let first, let last, first.time <= timeOffset else { return nil }
-
-         if last.time <= timeOffset {
-             return self.index(before: endIndex)
-         }
-
-         let index = partitioningIndex { item in
-             !(item.time <= timeOffset)
-         }
-
-         return self.index(before: index)
-     }
- }
-
- */
