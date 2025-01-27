@@ -28,6 +28,7 @@ extension TimeSeriesCollectionTests {
             (range: FixedDate(0) ..< FixedDate(100), expected: nil),
             (range: FixedDate(100) ..< FixedDate(110), expected: nil),
             (range: FixedDate(110) ..< FixedDate(120), expected: 0 ... 0),
+            (range: FixedDate(110) ..< FixedDate(130), expected: 0 ... 1),
             (range: FixedDate(110) ..< FixedDate(140), expected: 0 ... 2),
             (range: FixedDate(130) ..< FixedDate(150), expected: 2 ... 3),
             (range: FixedDate(130) ..< FixedDate(160), expected: 2 ... 4),
@@ -36,6 +37,23 @@ extension TimeSeriesCollectionTests {
         ])
         func range(_ test: (range: Range<FixedDate>, expected: ClosedRange<Int>?)) {
             let series = series
+            #expect(series.indices(for: test.range) == test.expected)
+        }
+
+        @Test("Indices by Range slice[1...3]", arguments: [
+            (range: FixedDate(0) ..< FixedDate(100), expected: nil),
+            (range: FixedDate(100) ..< FixedDate(110), expected: nil),
+            (range: FixedDate(110) ..< FixedDate(120), expected: nil),
+            (range: FixedDate(110) ..< FixedDate(130), expected: 1 ... 1),
+            (range: FixedDate(110) ..< FixedDate(140), expected: 1 ... 2),
+            (range: FixedDate(130) ..< FixedDate(150), expected: 2 ... 3),
+            (range: FixedDate(130) ..< FixedDate(160), expected: 2 ... 3),
+            (range: FixedDate(140) ..< FixedDate(160), expected: 3 ... 3),
+            (range: FixedDate(150) ..< FixedDate(160), expected: nil),
+            (range: FixedDate(160) ..< FixedDate(170), expected: nil),
+        ])
+        func rangeSlice(_ test: (range: Range<FixedDate>, expected: ClosedRange<Int>?)) {
+            let series = series[1 ... 3]
             #expect(series.indices(for: test.range) == test.expected)
         }
 
