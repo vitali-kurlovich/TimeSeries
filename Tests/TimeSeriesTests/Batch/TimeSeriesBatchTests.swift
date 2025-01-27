@@ -91,7 +91,7 @@ struct TimeSeriesBatchTests {
     }
 
     @Test("Batch slice with FixedDateInterval")
-    func batchSliceDateInterval() {
+    func batchSliceDateInterval() throws {
         let series1 = Self.series1
         let series2 = Self.series2
         let series3 = Self.series3
@@ -103,15 +103,21 @@ struct TimeSeriesBatchTests {
         #expect(batch[FixedDateInterval(start: FixedDate(500), end: FixedDate(600))].isEmpty)
         #expect(batch[FixedDateInterval(start: FixedDate(2000), end: FixedDate(2400))].isEmpty)
 
-        let renge = FixedDateInterval(start: FixedDate(90), end: FixedDate(250))
+        let renge = FixedDate(90) ... FixedDate(250)
 
-        let expacted = TimeSeriesBatch([series1[renge], series2[renge]])
+        let slice1 = try #require(series1[renge])
+        let slice2 = try #require(series2[renge])
+
+        let expacted = TimeSeriesBatch([slice1, slice2])
 
         #expect(Array(batch[renge]) == Array(expacted))
         #expect(batch[renge].count == 2)
 
-        let renge1 = FixedDateInterval(start: FixedDate(900), end: FixedDate(1100))
-        let expacted1 = TimeSeriesBatch([series3[renge1]])
+        let renge1 = FixedDate(900) ... FixedDate(1100)
+
+        let slice3 = try #require(series3[renge1])
+
+        let expacted1 = TimeSeriesBatch([slice3])
 
         #expect(Array(batch[renge1]) == Array(expacted1))
     }

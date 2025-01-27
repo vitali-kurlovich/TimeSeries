@@ -38,7 +38,7 @@ extension TimeSeriesBatch: TimeSeriesCollectionBatch {
     }
 
     public subscript(_ range: FixedDateInterval) -> SubSequenceBatch {
-        let batches = batches.lazy.map {
+        let batches = batches.lazy.compactMap {
             $0[range]
         }.filter {
             !$0.isEmpty

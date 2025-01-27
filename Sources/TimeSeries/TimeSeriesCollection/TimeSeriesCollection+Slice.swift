@@ -7,21 +7,43 @@
 
 public
 extension TimeSeriesCollection {
-    subscript(_ range: FixedDateInterval) -> Self.SubSequence {
-        guard let timeRange, timeRange.intersects(range) else {
-            return .empty
+    subscript(_ range: Range<FixedDate>) -> Self.SubSequence? {
+        guard let indices = indices(for: range) else {
+            return nil
         }
 
-        let start = partitioningIndex { item in
-            let date = timeBase.adding(milliseconds: item.time)
-            return range.start <= date
+        return self[indices]
+    }
+
+    subscript(_ range: ClosedRange<FixedDate>) -> Self.SubSequence? {
+        guard let indices = indices(for: range) else {
+            return nil
         }
 
-        let end = partitioningIndex { item in
-            let date = timeBase.adding(milliseconds: item.time)
-            return date > range.end
+        return self[indices]
+    }
+
+    subscript(_ range: PartialRangeFrom<FixedDate>) -> Self.SubSequence? {
+        guard let indices = indices(for: range) else {
+            return nil
         }
 
-        return self[start ..< end]
+        return self[indices]
+    }
+
+    subscript(_ range: PartialRangeThrough<FixedDate>) -> Self.SubSequence? {
+        guard let indices = indices(for: range) else {
+            return nil
+        }
+
+        return self[indices]
+    }
+
+    subscript(_ range: PartialRangeUpTo<FixedDate>) -> Self.SubSequence? {
+        guard let indices = indices(for: range) else {
+            return nil
+        }
+
+        return self[indices]
     }
 }

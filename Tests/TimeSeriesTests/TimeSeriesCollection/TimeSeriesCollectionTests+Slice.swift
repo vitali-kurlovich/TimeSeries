@@ -13,9 +13,9 @@ extension TimeSeriesCollectionTests {
     struct TimeSeriesCollectionSlice {
         @Test("Empty TimeSeries Sliecing")
         func sliceEmptySeries() throws {
-            let series = TimeSeriesSlice<MocItem>.empty
-            let interval = FixedDateInterval(start: FixedDate(100), end: FixedDate(200))
-            #expect(series[interval] == .empty)
+            let series = TimeSeriesSlice<MocItem>(timeBase: FixedDate(100), items: [])
+            let interval = FixedDate(100) ... FixedDate(200)
+            #expect(series[interval] == nil)
         }
 
         @Test("TimeSeries Sliecing")
@@ -28,26 +28,26 @@ extension TimeSeriesCollectionTests {
                                         MocItem(time: 40, index: 4), // 3
                                     ])
 
-            let beforeInterval = FixedDateInterval(start: FixedDate(10), end: FixedDate(90))
+            let beforeInterval = FixedDate(10) ... FixedDate(90)
 
-            #expect(series[beforeInterval] == .empty)
+            #expect(series[beforeInterval] == nil)
 
-            let afterInterval = FixedDateInterval(start: FixedDate(141), end: FixedDate(200))
+            let afterInterval = FixedDate(141) ... FixedDate(200)
 
-            #expect(series[afterInterval] == .empty)
+            #expect(series[afterInterval] == nil)
 
-            let intervalAll = FixedDateInterval(start: FixedDate(90), end: FixedDate(200))
+            let intervalAll = FixedDate(90) ... FixedDate(200)
 
             #expect(series[intervalAll] == series[0 ... 3])
 
             #expect(series[0 ... 3][1 ... 2] == series[1 ... 2])
 
-            let intervalAllFit = FixedDateInterval(start: FixedDate(110), end: FixedDate(140))
+            let intervalAllFit = FixedDate(110) ... FixedDate(140)
 
             #expect(series[intervalAllFit] == series[0 ... 3])
-            #expect(series[FixedDateInterval(start: FixedDate(100), end: FixedDate(140))] == series[0 ... 3])
-            #expect(series[FixedDateInterval(start: FixedDate(110), end: FixedDate(150))] == series[0 ... 3])
-            #expect(series[FixedDateInterval(start: FixedDate(111), end: FixedDate(139))] == series[1 ... 2])
+            #expect(series[FixedDate(100) ... FixedDate(140)] == series[0 ... 3])
+            #expect(series[FixedDate(110) ... FixedDate(150)] == series[0 ... 3])
+            #expect(series[FixedDate(111) ... FixedDate(139)] == series[1 ... 2])
         }
 
         @Test("Split maxCount",

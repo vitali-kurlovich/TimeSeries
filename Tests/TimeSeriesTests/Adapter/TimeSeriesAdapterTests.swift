@@ -53,7 +53,7 @@ struct TimeSeriesAdapterTests {
     }
 
     @Test("TimeSeriesAdapter slice by DateInterval")
-    func convertSubrangeDateInterval() {
+    func convertSubrangeDateInterval() throws {
         let series = TimeSeries(timeBase: FixedDate(200), items: ticks)
         let converter = MocTickConverter()
 
@@ -61,7 +61,7 @@ struct TimeSeriesAdapterTests {
 
         let dateInterval = FixedDateInterval(start: FixedDate(225), end: FixedDate(240))
 
-        let adapterSlice = adapter[dateInterval]
+        let adapterSlice = try #require(adapter[dateInterval])
 
         let resultSubrange = Array(adapterSlice)
 

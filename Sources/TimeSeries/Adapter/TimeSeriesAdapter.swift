@@ -57,8 +57,8 @@ extension TimeSeriesAdapter: RandomAccessCollection {
         return SubSequence(converter: converter, series: series)
     }
 
-    public subscript(_ range: FixedDateInterval) -> Self.SubSequence {
-        let series = series[range]
+    public subscript(_ range: FixedDateInterval) -> Self.SubSequence? {
+        guard let series = series[range] else { return nil }
         return SubSequence(converter: converter, series: series)
     }
 }
