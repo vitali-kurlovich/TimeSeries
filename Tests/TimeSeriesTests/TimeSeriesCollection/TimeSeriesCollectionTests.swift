@@ -8,7 +8,9 @@
 import Testing
 @testable import TimeSeries
 
-enum TimeSeriesCollectionTests {
+enum TimeSeriesCollectionTests {}
+
+extension TimeSeriesCollectionTests {
     @Suite("Date & Time")
     struct TimeSeriesCollectionDate {
         @Test("Series TimeRange")
