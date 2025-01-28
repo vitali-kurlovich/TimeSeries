@@ -19,14 +19,24 @@ extension TimeSeriesCollection {
             startIndex = endIndex
 
             let slice = self[rande]
-            splitted.append(slice)
+            if splitted.isEmpty {
+                splitted.append(slice)
+            } else {
+                splitted.append(slice.normalized())
+            }
         }
 
         let rande = startIndex ..< endIndex
 
         if !rande.isEmpty {
             let slice = self[rande]
-            splitted.append(slice)
+            
+            if splitted.isEmpty {
+                splitted.append(slice)
+            } else {
+                splitted.append(slice.normalized())
+            }
+            
         }
 
         return splitted
@@ -35,54 +45,38 @@ extension TimeSeriesCollection {
 
 public
 extension TimeSeriesCollection {
-    func split(_ time: FixedDate, omittingEmptySubsequences: Bool = true) -> [SubSequence] {
-        if timeBase == time {
-            return [self[startIndex ..< endIndex]]
+    func split(position: Self.Index) -> [SubSequence] {
+        let nextIndex = index(after: position)
+
+        let leftRange = startIndex ..< position
+        let midRange = position ..< nextIndex
+        let rightRange = nextIndex ..< endIndex
+
+        var result: [SubSequence] = []
+        result.reserveCapacity(3)
+
+        if !leftRange.isEmpty {
+            result.append(self[leftRange].normalized())
         }
 
-        if omittingEmptySubsequences {
-            return splitOmittingEmpty(time)
-        }
-
-        guard let timeRange else {
-            let empty: SubSequence = .empty
-            return [empty.setTimeBase(time)]
-        }
-
-        if time == timeRange.start {
-            return [self[startIndex ..< endIndex]]
-        }
-
-        if time == timeRange.end {
-            return [self[startIndex ..< endIndex], .empty.setTimeBase(time)]
-        }
-
-        if timeRange.contains(time) {
-            let end = partitioningIndex { item in
-                let date = timeBase.adding(milliseconds: item.time)
-                return date > time
-            }
-
-            return [self[startIndex ..< end], self[end ..< endIndex]]
-        }
-
-        return []
+        return result
     }
 
-    private func splitOmittingEmpty(_ time: FixedDate) -> [SubSequence] {
-        guard let timeRange else {
-            return []
+    func split(_ time: FixedDate) -> [SubSequence] {
+        let splitted: [SubSequence]
+
+        if let index = firstIndex(greaterOrEqual: time) {
+            splitted = [self[startIndex ..< index], self[index ..< endIndex].setTimeBase(time)]
+        } else {
+            if time < timeBase {
+                splitted = [.empty.setTimeBase(timeBase), self[startIndex ..< endIndex]]
+            } else if time > timeBase {
+                splitted = [self[startIndex ..< endIndex], .empty.setTimeBase(timeBase)]
+            } else {
+                splitted = [self[startIndex ..< endIndex]]
+            }
         }
 
-        if time <= timeRange.start || time >= timeRange.end {
-            return [self[startIndex ..< endIndex]]
-        }
-
-        let end = partitioningIndex { item in
-            let date = timeBase.adding(milliseconds: item.time)
-            return date > time
-        }
-
-        return [self[startIndex ..< end], self[end ..< endIndex]]
+        return splitted
     }
 }
