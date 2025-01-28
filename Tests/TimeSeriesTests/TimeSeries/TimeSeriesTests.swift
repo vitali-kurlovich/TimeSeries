@@ -8,6 +8,4 @@
 import Testing
 @testable import TimeSeries
 
-enum TimeSeriesTests {
- 
-}
+enum TimeSeriesTests {}
