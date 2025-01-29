@@ -30,13 +30,12 @@ extension TimeSeriesCollection {
 
         if !rande.isEmpty {
             let slice = self[rande]
-            
+
             if splitted.isEmpty {
                 splitted.append(slice)
             } else {
                 splitted.append(slice.normalized())
             }
-            
         }
 
         return splitted
@@ -46,37 +45,40 @@ extension TimeSeriesCollection {
 public
 extension TimeSeriesCollection {
     func split(position: Self.Index) -> [SubSequence] {
-        let nextIndex = index(after: position)
-
-        let leftRange = startIndex ..< position
-        let midRange = position ..< nextIndex
-        let rightRange = nextIndex ..< endIndex
-
         var result: [SubSequence] = []
         result.reserveCapacity(3)
 
+        let leftRange = startIndex ..< position
         if !leftRange.isEmpty {
-            result.append(self[leftRange].normalized())
+            result.append(self[leftRange])
         }
+
+        let nextIndex = index(after: position)
+
+        let midRange = position ..< nextIndex
+        if !midRange.isEmpty {
+            if result.isEmpty {
+                result.append(self[midRange])
+            } else {
+                result.append(self[midRange].normalized())
+            }
+        }
+
+        guard nextIndex < endIndex else {
+            return result
+        }
+
+        let rightRange = nextIndex ..< endIndex
+        result.append(self[rightRange].normalized())
 
         return result
     }
 
-    func split(_ time: FixedDate) -> [SubSequence] {
-        let splitted: [SubSequence]
-
+    func split(time: FixedDate) -> [SubSequence] {
         if let index = firstIndex(greaterOrEqual: time) {
-            splitted = [self[startIndex ..< index], self[index ..< endIndex].setTimeBase(time)]
+            return split(position: index)
         } else {
-            if time < timeBase {
-                splitted = [.empty.setTimeBase(timeBase), self[startIndex ..< endIndex]]
-            } else if time > timeBase {
-                splitted = [self[startIndex ..< endIndex], .empty.setTimeBase(timeBase)]
-            } else {
-                splitted = [self[startIndex ..< endIndex]]
-            }
+            return []
         }
-
-        return splitted
     }
 }
